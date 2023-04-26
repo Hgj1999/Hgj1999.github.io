@@ -235,7 +235,7 @@
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E7%94%9F%E6%80%81/vxe-table/%E8%B8%A9%E5%9D%91/" target="_self">
         <div>
-          
+          更新动态列在Vue2中使用vxetable组件时，如果不调用clearSort方法而直接修改columns，可能会出现渲染问题。这是因为vxetable组件内部维护了一个状态，用于记录表格的排序状态，当columns发生变化时，如果不正确地更新这个状态，就会导致渲染问题的出现。调用clearSort方法的作用是清除表格的排序状态，这样在更新columns后，vxetable组件会重新根据新的col
         </div>
       </a>
 
@@ -298,81 +298,6 @@
               <a href="/tags/Vue2/">#Vue2</a>
             
               <a href="/tags/vxe-table/">#vxe-table</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/04.update%20render/" target="_self">
-          update render
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/04.update%20render/" target="_self">
-        <div>
-          demo12345678910111213141516171819202122&lt;script&gt;  // Vue实例化  let vm = new Vue(&#123;    el: &quot;#app&quot;,    data() &#123;      return &#123;        a: 123,      &#125;;    &#125;,    // rend
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-04-26 10:37" pubdate>
-              2023-04-26
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue2/" class="category-chain-item">Vue2</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/" class="category-chain-item">原理</a>
-  
-  
-
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Vue2/">#Vue2</a>
             
           </div>
         
@@ -545,6 +470,81 @@
       <a class="index-excerpt index-excerpt__noimg" href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/06.computed/" target="_self">
         <div>
           demo在两秒之后改变了模板里面的 cc 但是计算属性依赖的 aa 和 bb 都没变化 所以计算属性不会重新计算 还是保留的上次计算结果 12345678910111213141516171819202122232425262728&lt;script&gt;  // Vue实例化  let vm = new Vue(&#123;    el: &quot;#app&quot;,    data(
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-04-26 10:37" pubdate>
+              2023-04-26
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue2/" class="category-chain-item">Vue2</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/" class="category-chain-item">原理</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Vue2/">#Vue2</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/04.update%20render/" target="_self">
+          update render
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/04.update%20render/" target="_self">
+        <div>
+          demo12345678910111213141516171819202122&lt;script&gt;  // Vue实例化  let vm = new Vue(&#123;    el: &quot;#app&quot;,    data() &#123;      return &#123;        a: 123,      &#125;;    &#125;,    // rend
         </div>
       </a>
 
@@ -837,14 +837,96 @@
       <h1 class="index-header">
         
         <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/01.%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2%E5%A4%84%E7%90%86/" target="_self">
-          observe
+          错误页面处理
         </a>
       </h1>
 
       
       <a class="index-excerpt index-excerpt__noimg" href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/01.%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2%E5%A4%84%E7%90%86/" target="_self">
         <div>
-          error.vueerror.vue必须与项目入口文件app.vue在同级别目录下error.vue接受了一个error的props 定制处理123456789101112131415&lt;template&gt;  &lt;ErrorPage  :errCode=&quot;error.statusCode&quot;  &gt;  &lt;/ErrorPage&gt;&lt;/templat
+          error.vueerror.vue必须与项目入口文件app.vue在同级别目录下error.vue接受了一个error的props 定制处理12345678910111213141516&lt;template&gt;  &lt;ErrorPage  :errCode=&quot;error.statusCode&quot;  &gt;  &lt;/ErrorPage&gt;&lt;/templ
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-04-26 10:05" pubdate>
+              2023-04-26
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue3/" class="category-chain-item">Vue3</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/" class="category-chain-item">生态</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/" class="category-chain-item">nuxt3</a>
+  
+  
+
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Vue3/">#Vue3</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/03.%E6%B7%BB%E5%8A%A0%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81/" target="_self">
+          添加百度统计代码
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/03.%E6%B7%BB%E5%8A%A0%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81/" target="_self">
+        <div>
+          设置单页面模式 首先去百度统计PC端首页-&gt;使用规则-&gt;单页设置-&gt;启用单页应用数据统计 在项目入口文件app.vue引入百度统计代码123456789101112131415&lt;script setup&gt;const route = useRoute()useHead(&#123;  script: [    &#123;      src: &#x27;https:/
         </div>
       </a>
 
@@ -913,6 +995,12 @@
   </div>
 
 
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
 
 
 

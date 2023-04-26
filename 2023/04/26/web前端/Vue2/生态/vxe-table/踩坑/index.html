@@ -16,15 +16,15 @@
   <meta name="author" content="Glimmering Stars">
   <meta name="keywords" content="技术博客">
   
-    <meta name="description" content="点点星光的技术博客">
+    <meta name="description" content="更新动态列在Vue2中使用vxetable组件时，如果不调用clearSort方法而直接修改columns，可能会出现渲染问题。这是因为vxetable组件内部维护了一个状态，用于记录表格的排序状态，当columns发生变化时，如果不正确地更新这个状态，就会导致渲染问题的出现。调用clearSort方法的作用是清除表格的排序状态，这样在更新columns后，vxetable组件会重新根据新的col">
 <meta property="og:type" content="article">
 <meta property="og:title" content="踩坑">
 <meta property="og:url" content="https://hgj1999.github.io/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E7%94%9F%E6%80%81/vxe-table/%E8%B8%A9%E5%9D%91/index.html">
 <meta property="og:site_name" content="点点星光的技术博客">
-<meta property="og:description" content="点点星光的技术博客">
+<meta property="og:description" content="更新动态列在Vue2中使用vxetable组件时，如果不调用clearSort方法而直接修改columns，可能会出现渲染问题。这是因为vxetable组件内部维护了一个状态，用于记录表格的排序状态，当columns发生变化时，如果不正确地更新这个状态，就会导致渲染问题的出现。调用clearSort方法的作用是清除表格的排序状态，这样在更新columns后，vxetable组件会重新根据新的col">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-04-26T05:56:15.000Z">
-<meta property="article:modified_time" content="2023-04-26T06:05:25.866Z">
+<meta property="article:modified_time" content="2023-04-26T06:35:12.730Z">
 <meta property="article:author" content="Glimmering Stars">
 <meta property="article:tag" content="Vue2">
 <meta property="article:tag" content="vxe-table">
@@ -221,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          0 字
+          1.9k 字
         
       </span>
     
@@ -232,7 +232,7 @@
         
         
         
-          1 分钟
+          16 分钟
         
       </span>
     
@@ -282,7 +282,7 @@
         aria-expanded="true"
       >
         web前端
-        <span class="list-group-count">(9)</span>
+        <span class="list-group-count">(11)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -490,7 +490,7 @@
         aria-expanded="false"
       >
         Vue3
-        <span class="list-group-count">(2)</span>
+        <span class="list-group-count">(4)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -554,7 +554,7 @@
         aria-expanded="false"
       >
         生态
-        <span class="list-group-count">(1)</span>
+        <span class="list-group-count">(3)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -581,7 +581,7 @@
         aria-expanded="false"
       >
         nuxt3
-        <span class="list-group-count">(1)</span>
+        <span class="list-group-count">(3)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -595,10 +595,28 @@
     
       
       
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/01.%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2%E5%A4%84%E7%90%86/" title="observe"
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/01.%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2%E5%A4%84%E7%90%86/" title="错误页面处理"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">observe</span>
+          <span class="category-post">错误页面处理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/03.%E6%B7%BB%E5%8A%A0%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81/" title="添加百度统计代码"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">添加百度统计代码</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/02.%E5%AF%BC%E8%88%AA%E6%A0%8F%E9%94%9A%E7%82%B9/" title="导航栏锚点"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">导航栏锚点</span>
         </a>
       
     
@@ -638,7 +656,14 @@
             
               <div class="markdown-body">
                 
-                
+                <h1 id="更新动态列"><a href="#更新动态列" class="headerlink" title="更新动态列"></a>更新动态列</h1><p>在Vue2中使用vxetable组件时，如果不调用clearSort方法而直接修改columns，可能会出现渲染问题。这是因为vxetable组件内部维护了一个状态，用于记录表格的排序状态，当columns发生变化时，如果不正确地更新这个状态，就会导致渲染问题的出现。<br>调用clearSort方法的作用是清除表格的排序状态，这样在更新columns后，vxetable组件会重新根据新的columns进行排序，从而避免渲染问题的出现。<br>具体地，如果不调用clearSort方法，可能会出现以下两种情况：</p>
+<ol>
+<li>表格数据显示不正确：当使用动态列配置时，如果不调用clearSort方法就直接修改columns，可能会导致表格数据显示不正确，这是因为vxetable组件仍然保留着原来的排序状态，导致新的columns无法正确应用到表格数据上。</li>
+<li>列表头显示异常：当使用动态列配置时，如果不调用clearSort方法就直接修改columns，可能会导致列表头显示异常，这是因为vxetable组件内部维护的排序状态没有正确更新，导致列表头的渲染出现问题。</li>
+</ol>
+<p>因此，在修改columns时，建议先调用clearSort方法清除排序状态，再进行列属性的更新。这样可以避免渲染问题的出现，确保vxetable组件能够正确地更新和显示数据。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; ref, onBeforeUnmount &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue&#x27;</span>;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">useInViewAnimate</span> = (<span class="hljs-params">el, binding</span>) =&gt; &#123;<br>  <span class="hljs-comment">// check if browser supports IntersectionObserver API</span><br>  <span class="hljs-keyword">if</span> (!(<span class="hljs-string">&#x27;IntersectionObserver&#x27;</span> <span class="hljs-keyword">in</span> <span class="hljs-variable language_">window</span>)) &#123;<br>    <span class="hljs-comment">// simulate intersection observer for unsupported browser</span><br>    <span class="hljs-keyword">let</span> timer;<br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">listener</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>      <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isInView</span>(el)) &#123;<br>        el.<span class="hljs-property">classList</span>.<span class="hljs-title function_">add</span>(binding.<span class="hljs-property">value</span>);<br>        timer &amp;&amp; <span class="hljs-built_in">clearTimeout</span>(timer);<br>        <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">removeEventListener</span>(<span class="hljs-string">&#x27;scroll&#x27;</span>, listener);<br>      &#125;<br>    &#125;;<br>    <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;scroll&#x27;</span>, listener);<br>    <span class="hljs-keyword">return</span> &#123;<br>      <span class="hljs-title function_">destroy</span>(<span class="hljs-params"></span>) &#123;<br>        <span class="hljs-variable language_">window</span>.<span class="hljs-title function_">removeEventListener</span>(<span class="hljs-string">&#x27;scroll&#x27;</span>, listener);<br>      &#125;,<br>    &#125;;<br>  &#125;<br><br>  <span class="hljs-comment">// use IntersectionObserver for supported browser</span><br>  <span class="hljs-keyword">const</span> observer = <span class="hljs-keyword">new</span> <span class="hljs-title class_">IntersectionObserver</span>(<span class="hljs-function">(<span class="hljs-params">[entry]</span>) =&gt;</span> &#123;<br>    <span class="hljs-keyword">if</span> (entry.<span class="hljs-property">isIntersecting</span>) &#123;<br>      el.<span class="hljs-property">classList</span>.<span class="hljs-title function_">add</span>(binding.<span class="hljs-property">value</span>);<br>    &#125;<br>  &#125;, &#123;<br>    <span class="hljs-attr">rootMargin</span>: <span class="hljs-string">&#x27;100px&#x27;</span>,<br>    <span class="hljs-attr">threshold</span>: <span class="hljs-number">0</span><br>  &#125;);<br>  observer.<span class="hljs-title function_">observe</span>(el);<br><br>  <span class="hljs-comment">// clean up</span><br>  <span class="hljs-title function_">onBeforeUnmount</span>(<span class="hljs-function">() =&gt;</span> &#123;<br>    observer.<span class="hljs-title function_">disconnect</span>();<br>  &#125;);<br>  <br>  <span class="hljs-keyword">return</span> &#123;<br>    <span class="hljs-title function_">destroy</span>(<span class="hljs-params"></span>) &#123;<br>      observer.<span class="hljs-title function_">disconnect</span>();<br>    &#125;,<br>  &#125;;<br>&#125;;<br><br><span class="hljs-comment">// simulate intersection observer for unsupported browser</span><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">isInView</span> = (<span class="hljs-params">el</span>) =&gt; &#123;<br>  <span class="hljs-keyword">const</span> rect = el.<span class="hljs-title function_">getBoundingClientRect</span>();<br>  <span class="hljs-keyword">const</span> viewHeight = <span class="hljs-variable language_">window</span>.<span class="hljs-property">innerHeight</span> - rect.<span class="hljs-property">top</span><br>  <span class="hljs-keyword">return</span> <span class="hljs-variable language_">window</span>.<span class="hljs-property">innerHeight</span> - rect.<span class="hljs-property">top</span> &gt; <span class="hljs-number">100</span>;<br>&#125;;<br><br><br></code></pre></td></tr></table></figure>
+
                 
               </div>
             
@@ -755,8 +780,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/04.update%20render/" title="update render">
-                        <span class="hidden-mobile">update render</span>
+                      <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/02.template/" title="template">
+                        <span class="hidden-mobile">template</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
