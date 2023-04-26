@@ -16,22 +16,22 @@
   <meta name="author" content="Glimmering Stars">
   <meta name="keywords" content="技术博客">
   
-    <meta name="description" content="设置单页面模式 首先去百度统计PC端首页-&gt;使用规则-&gt;单页设置-&gt;启用单页应用数据统计 在项目入口文件app.vue引入百度统计代码123456789101112131415&lt;script setup&gt;const route &#x3D; useRoute()useHead(&amp;#123;  script: [    &amp;#123;      src: &amp;#x27;https:&#x2F;">
+    <meta name="description" content="基本概念HTTPS &#x3D; HTTP + SSL&#x2F;TLSHTTP 明文传输，不安全利用 HTTP 传输数据，利用 SSL&#x2F;TLS 加密数据包 密码学概念明文：明文指的是未被加密过的原始数据。密文：明文被某种加密算法加密之后，会变成密文，从而确保原始数据的安全。密文也可以被解密，得到原始的明文。密钥：密钥是一种参数，它是在明文转换为密文或将密文转换为明文的算法中输入的参数。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="添加百度统计代码">
-<meta property="og:url" content="https://hgj1999.github.io/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/03.%E6%B7%BB%E5%8A%A0%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81/index.html">
+<meta property="og:title" content="HTTPS">
+<meta property="og:url" content="https://hgj1999.github.io/2023/04/26/%E7%BD%91%E7%BB%9C/02.HTTPS/index.html">
 <meta property="og:site_name" content="点点星光的技术博客">
-<meta property="og:description" content="设置单页面模式 首先去百度统计PC端首页-&gt;使用规则-&gt;单页设置-&gt;启用单页应用数据统计 在项目入口文件app.vue引入百度统计代码123456789101112131415&lt;script setup&gt;const route &#x3D; useRoute()useHead(&amp;#123;  script: [    &amp;#123;      src: &amp;#x27;https:&#x2F;">
+<meta property="og:description" content="基本概念HTTPS &#x3D; HTTP + SSL&#x2F;TLSHTTP 明文传输，不安全利用 HTTP 传输数据，利用 SSL&#x2F;TLS 加密数据包 密码学概念明文：明文指的是未被加密过的原始数据。密文：明文被某种加密算法加密之后，会变成密文，从而确保原始数据的安全。密文也可以被解密，得到原始的明文。密钥：密钥是一种参数，它是在明文转换为密文或将密文转换为明文的算法中输入的参数。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-04-26T02:05:41.000Z">
-<meta property="article:modified_time" content="2023-04-26T06:45:12.374Z">
+<meta property="article:modified_time" content="2023-04-26T07:50:51.421Z">
 <meta property="article:author" content="Glimmering Stars">
-<meta property="article:tag" content="Vue3">
+<meta property="article:tag" content="network">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>添加百度统计代码 - 点点星光的技术博客</title>
+  <title>HTTPS - 点点星光的技术博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="添加百度统计代码"></span>
+            <span id="subtitle" data-typed-text="HTTPS"></span>
           
         </div>
 
@@ -220,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          528 字
+          2k 字
         
       </span>
     
@@ -231,7 +231,7 @@
         
         
         
-          5 分钟
+          17 分钟
         
       </span>
     
@@ -276,17 +276,17 @@
     
     <div class="category row nomargin-x">
       <a class="category-item 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="web前端"
-        id="heading-348c88b2fce1b2a4dca21addc7a9b510" role="tab" data-toggle="collapse" href="#collapse-348c88b2fce1b2a4dca21addc7a9b510"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="网络"
+        id="heading-7ddbe15c845fa27a2bab496183042ca6" role="tab" data-toggle="collapse" href="#collapse-7ddbe15c845fa27a2bab496183042ca6"
         aria-expanded="true"
       >
-        web前端
-        <span class="list-group-count">(12)</span>
+        网络
+        <span class="list-group-count">(2)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-348c88b2fce1b2a4dca21addc7a9b510"
-           role="tabpanel" aria-labelledby="heading-348c88b2fce1b2a4dca21addc7a9b510">
+      <div class="category-collapse collapse show" id="collapse-7ddbe15c845fa27a2bab496183042ca6"
+           role="tabpanel" aria-labelledby="heading-7ddbe15c845fa27a2bab496183042ca6">
         
         
           
@@ -303,153 +303,17 @@
     
     <div class="category-sub row nomargin-x">
       <a class="category-subitem collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Vue2"
-        id="heading-b5bc4fae52caba546fa469b33a1f7efd" role="tab" data-toggle="collapse" href="#collapse-b5bc4fae52caba546fa469b33a1f7efd"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="HTTP"
+        id="heading-293c9ea246ff9985dc6f62a650f78986" role="tab" data-toggle="collapse" href="#collapse-293c9ea246ff9985dc6f62a650f78986"
         aria-expanded="false"
       >
-        Vue2
-        <span class="list-group-count">(7)</span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-      <div class="category-collapse collapse " id="collapse-b5bc4fae52caba546fa469b33a1f7efd"
-           role="tabpanel" aria-labelledby="heading-b5bc4fae52caba546fa469b33a1f7efd">
-        
-        
-          
-          
-  <div class="category-post-list">
-    
-    
-  </div>
-
-          
-  
-    
-    
-    
-    <div class="category-sub row nomargin-x">
-      <a class="category-subitem collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="原理"
-        id="heading-b6724cffe9b1e39a5652a348831a4e0d" role="tab" data-toggle="collapse" href="#collapse-b6724cffe9b1e39a5652a348831a4e0d"
-        aria-expanded="false"
-      >
-        原理
-        <span class="list-group-count">(6)</span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-      <div class="category-collapse collapse " id="collapse-b6724cffe9b1e39a5652a348831a4e0d"
-           role="tabpanel" aria-labelledby="heading-b6724cffe9b1e39a5652a348831a4e0d">
-        
-        
-          
-  <div class="category-post-list">
-    
-    
-      
-      
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/01.observe/" title="observe"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">observe</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/02.template/" title="template"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">template</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/03.init%20render/" title="init render"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">init render</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/04.update%20render/" title="update render"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">update render</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/05.watch/" title="watch"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">watch</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/06.computed/" title="computed"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">computed</span>
-        </a>
-      
-    
-  </div>
-
-        
-      </div>
-    </div>
-  
-    
-    
-    
-    <div class="category-sub row nomargin-x">
-      <a class="category-subitem collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="生态"
-        id="heading-2bbb08c8b90b98a98ee6940d899b794d" role="tab" data-toggle="collapse" href="#collapse-2bbb08c8b90b98a98ee6940d899b794d"
-        aria-expanded="false"
-      >
-        生态
+        HTTP
         <span class="list-group-count">(1)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse " id="collapse-2bbb08c8b90b98a98ee6940d899b794d"
-           role="tabpanel" aria-labelledby="heading-2bbb08c8b90b98a98ee6940d899b794d">
-        
-        
-          
-          
-  <div class="category-post-list">
-    
-    
-  </div>
-
-          
-  
-    
-    
-    
-    <div class="category-sub row nomargin-x">
-      <a class="category-subitem collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="vxe-table"
-        id="heading-7e0799eacd75b19d26626e298e9212bf" role="tab" data-toggle="collapse" href="#collapse-7e0799eacd75b19d26626e298e9212bf"
-        aria-expanded="false"
-      >
-        vxe-table
-        <span class="list-group-count">(1)</span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-      <div class="category-collapse collapse " id="collapse-7e0799eacd75b19d26626e298e9212bf"
-           role="tabpanel" aria-labelledby="heading-7e0799eacd75b19d26626e298e9212bf">
+      <div class="category-collapse collapse " id="collapse-293c9ea246ff9985dc6f62a650f78986"
+           role="tabpanel" aria-labelledby="heading-293c9ea246ff9985dc6f62a650f78986">
         
         
           
@@ -458,82 +322,10 @@
     
       
       
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E7%94%9F%E6%80%81/vxe-table/%E8%B8%A9%E5%9D%91/" title="踩坑"
+        <a href="/2023/04/26/%E7%BD%91%E7%BB%9C/01.HTTP/" title="HTTP"
            class="list-group-item list-group-item-action
            ">
-          <span class="category-post">踩坑</span>
-        </a>
-      
-    
-  </div>
-
-        
-      </div>
-    </div>
-  
-        
-      </div>
-    </div>
-  
-        
-      </div>
-    </div>
-  
-    
-    
-    
-    <div class="category-sub row nomargin-x">
-      <a class="category-subitem 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Vue3"
-        id="heading-79dcf464d3e1b41635e194883d0c939a" role="tab" data-toggle="collapse" href="#collapse-79dcf464d3e1b41635e194883d0c939a"
-        aria-expanded="true"
-      >
-        Vue3
-        <span class="list-group-count">(4)</span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-      <div class="category-collapse collapse show" id="collapse-79dcf464d3e1b41635e194883d0c939a"
-           role="tabpanel" aria-labelledby="heading-79dcf464d3e1b41635e194883d0c939a">
-        
-        
-          
-          
-  <div class="category-post-list">
-    
-    
-  </div>
-
-          
-  
-    
-    
-    
-    <div class="category-sub row nomargin-x">
-      <a class="category-subitem collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="原理"
-        id="heading-b6724cffe9b1e39a5652a348831a4e0d" role="tab" data-toggle="collapse" href="#collapse-b6724cffe9b1e39a5652a348831a4e0d"
-        aria-expanded="false"
-      >
-        原理
-        <span class="list-group-count">(1)</span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-      <div class="category-collapse collapse " id="collapse-b6724cffe9b1e39a5652a348831a4e0d"
-           role="tabpanel" aria-labelledby="heading-b6724cffe9b1e39a5652a348831a4e0d">
-        
-        
-          
-  <div class="category-post-list">
-    
-    
-      
-      
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E5%8E%9F%E7%90%86/observe/" title="observe"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">observe</span>
+          <span class="category-post">HTTP</span>
         </a>
       
     
@@ -548,44 +340,17 @@
     
     <div class="category-sub row nomargin-x">
       <a class="category-subitem 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="生态"
-        id="heading-2bbb08c8b90b98a98ee6940d899b794d" role="tab" data-toggle="collapse" href="#collapse-2bbb08c8b90b98a98ee6940d899b794d"
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="HTTPS"
+        id="heading-0e8433f9a404f1f3ba601c14b026d321" role="tab" data-toggle="collapse" href="#collapse-0e8433f9a404f1f3ba601c14b026d321"
         aria-expanded="true"
       >
-        生态
-        <span class="list-group-count">(3)</span>
+        HTTPS
+        <span class="list-group-count">(1)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-2bbb08c8b90b98a98ee6940d899b794d"
-           role="tabpanel" aria-labelledby="heading-2bbb08c8b90b98a98ee6940d899b794d">
-        
-        
-          
-          
-  <div class="category-post-list">
-    
-    
-  </div>
-
-          
-  
-    
-    
-    
-    <div class="category-sub row nomargin-x">
-      <a class="category-subitem 
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="nuxt3"
-        id="heading-fc69c1cad2d55a934383c957f4133484" role="tab" data-toggle="collapse" href="#collapse-fc69c1cad2d55a934383c957f4133484"
-        aria-expanded="true"
-      >
-        nuxt3
-        <span class="list-group-count">(3)</span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-      <div class="category-collapse collapse show" id="collapse-fc69c1cad2d55a934383c957f4133484"
-           role="tabpanel" aria-labelledby="heading-fc69c1cad2d55a934383c957f4133484">
+      <div class="category-collapse collapse show" id="collapse-0e8433f9a404f1f3ba601c14b026d321"
+           role="tabpanel" aria-labelledby="heading-0e8433f9a404f1f3ba601c14b026d321">
         
         
           
@@ -594,73 +359,10 @@
     
       
       
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/01.%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2%E5%A4%84%E7%90%86/" title="错误页面处理"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">错误页面处理</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/02.%E5%AF%BC%E8%88%AA%E6%A0%8F%E9%94%9A%E7%82%B9/" title="导航栏锚点"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">导航栏锚点</span>
-        </a>
-      
-    
-      
-      
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/03.%E6%B7%BB%E5%8A%A0%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81/" title="添加百度统计代码"
+        <a href="/2023/04/26/%E7%BD%91%E7%BB%9C/02.HTTPS/" title="HTTPS"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">添加百度统计代码</span>
-        </a>
-      
-    
-  </div>
-
-        
-      </div>
-    </div>
-  
-        
-      </div>
-    </div>
-  
-        
-      </div>
-    </div>
-  
-    
-    
-    
-    <div class="category-sub row nomargin-x">
-      <a class="category-subitem collapsed
-          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="浏览器"
-        id="heading-912302cb020149c37f9642fbc9e42891" role="tab" data-toggle="collapse" href="#collapse-912302cb020149c37f9642fbc9e42891"
-        aria-expanded="false"
-      >
-        浏览器
-        <span class="list-group-count">(1)</span>
-        <i class="iconfont icon-arrowright"></i>
-      </a>
-      
-      <div class="category-collapse collapse " id="collapse-912302cb020149c37f9642fbc9e42891"
-           role="tabpanel" aria-labelledby="heading-912302cb020149c37f9642fbc9e42891">
-        
-        
-          
-  <div class="category-post-list">
-    
-    
-      
-      
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/01.%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%8Ejs/" title="浏览器与js"
-           class="list-group-item list-group-item-action
-           ">
-          <span class="category-post">浏览器与js</span>
+          <span class="category-post">HTTPS</span>
         </a>
       
     
@@ -687,18 +389,41 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">添加百度统计代码</h1>
+            <h1 style="display: none">HTTPS</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="设置单页面模式"><a href="#设置单页面模式" class="headerlink" title="设置单页面模式"></a>设置单页面模式</h1><ol>
-<li>首先去百度统计PC端首页-&gt;使用规则-&gt;单页设置-&gt;启用单页应用数据统计</li>
-<li>在项目入口文件<code>app.vue</code>引入百度统计代码<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script setup&gt;<br><span class="hljs-keyword">const</span> route = <span class="hljs-title function_">useRoute</span>()<br><span class="hljs-title function_">useHead</span>(&#123;<br>  <span class="hljs-attr">script</span>: [<br>    &#123;<br>      <span class="hljs-attr">src</span>: <span class="hljs-string">&#x27;https://hm.baidu.com/hm.js?your key&#x27;</span><br>    &#125;<br>  ]<br>&#125;)<br><span class="hljs-title function_">watch</span>(route, <span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">if</span> (_hmt) &#123;<br>    _hmt.<span class="hljs-title function_">push</span>([<span class="hljs-string">&#x27;_trackPageview&#x27;</span>, route.<span class="hljs-property">path</span>])<br>  &#125;<br>&#125;)<br>&lt;/script&gt;<br></code></pre></td></tr></table></figure></li>
+                <h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p><strong>HTTPS &#x3D; HTTP + SSL&#x2F;TLS</strong><br><strong>HTTP 明文传输，不安全</strong><br><strong>利用 HTTP 传输数据，利用 SSL&#x2F;TLS 加密数据包</strong></p>
+<h2 id="密码学概念"><a href="#密码学概念" class="headerlink" title="密码学概念"></a>密码学概念</h2><p><strong>明文</strong>：明文指的是未被加密过的原始数据。<br><strong>密文</strong>：明文被某种加密算法加密之后，会变成密文，从而确保原始数据的安全。密文也可以被解密，得到原始的明文。<br><strong>密钥</strong>：密钥是一种参数，它是在明文转换为密文或将密文转换为明文的算法中输入的参数。密钥分为对称密钥与非对称密钥，分别应用在对称加密和非对称加密上。</p>
+<p><strong>对称加密（私钥加密）：</strong> 信息的发送方和接收方使用同一个密钥去加密和解密数据。<br>其加密过程如下：<strong>明文 + 加密算法 + 私钥 &#x3D;&gt; 密文</strong><br>解密过程如下： <strong>密文 + 解密算法 + 私钥 &#x3D;&gt; 明文</strong><br><strong>优点：</strong>加密和解密速度快，适合于对大数据量进行加密 。<br><strong>缺点：</strong>算法公开， 一旦私钥被泄露，那么密文就很容易被破解  ，密钥安全管理困难  </p>
+<p><strong>非对称加密（公钥加密）：</strong>使用一对密钥（公钥和私钥），服务端保存私钥，客户端保存公钥。私钥不能对外泄漏。公钥任何客户端都可以获取到，用公钥或者私钥中的任何一个进行加密，用另一个进行解密。<br>被公钥加密过的密文只能被私钥解密，过程如下：<br><strong>明文 + 加密算法 + 公钥 &#x3D;&gt; 密文， 密文 + 解密算法 + 私钥 &#x3D;&gt; 明文</strong><br>被私钥加密过的密文只能被公钥解密，过程如下：<br><strong>明文 + 加密算法 + 私钥 &#x3D;&gt; 密文， 密文 + 解密算法 + 公钥 &#x3D;&gt; 明文</strong><br><strong>优点：</strong>安全性高（得不到私钥就无法解密）<br><strong>缺点：</strong>算法公开，加密和解密花费时间长、速度慢，只适合对少量数据进行加密。  </p>
+<h1 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h1><p><strong>SSL</strong>（Secure Sockets Layer）安全套接层和** TLS<strong>（Transport Layer Security）传输层安全协议其实是</strong>一套东西<strong>。</strong>HTTPS** 需要使用一套 <strong>CA 数字证书，</strong>证书附带了一个<strong>公钥Pub，</strong>与之对应的**私钥 Private **保留在服务端不公开。</p>
+<h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><ol>
+<li>用户在浏览器发起 HTTPS 请求，默认使用服务端的443端口进行连接</li>
+<li>服务端收到请求，返回配置好的包含<strong>公钥Pub的</strong>数字证书返回给客户端</li>
+<li>客户端收到<strong>证书，</strong>校验合法性，主要是：是否在有效期内、证书的域名与请求的域名是否匹配， 上一级证书是否有效（递归判断，直到判断到系统内置或浏览器配置好的根证书），如果不通过，则显示HTTPS警告信息，如果通过则继续；  </li>
+<li>客户端生成一个用于对称加密的<strong>随机key</strong>，并用证书内的<strong>公钥Pub</strong>进行非对称加密，发送给服务端</li>
+<li>服务端收到<strong>随机key</strong>的密文，使用与<strong>公钥Pub</strong>配对的<strong>私钥Private</strong>进行解密，得到<strong>随机key</strong>的明文</li>
+<li>服务端使用客户端发送过来的<strong>随机key</strong>对要传输的HTTP数据进行对称加密（加密的私钥就是这个<strong>随机key</strong>），将密文返回给客户端</li>
+<li>客户端使用<strong>随机key</strong>对称解密密文，得到HTTP数据明文</li>
+<li>后续HTTPS请求使用之前交换好的<strong>随机Key</strong>进行对称加解密。</li>
 </ol>
-<h2 id="不设置单页模式"><a href="#不设置单页模式" class="headerlink" title="不设置单页模式"></a>不设置单页模式</h2><ol>
-<li>对应的每个页面引入百度统计代码<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">useHead</span>(&#123;<br><br>  <span class="hljs-attr">script</span>: [<br>    &#123;<br>      <span class="hljs-attr">src</span>: <span class="hljs-string">&#x27;https://hm.baidu.com/hm.js?your key&#x27;</span>,<br>      <span class="hljs-attr">bodyClose</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">// false 添加到 head标签内</span><br>      <span class="hljs-attr">async</span>: <span class="hljs-literal">true</span>,<br>      <span class="hljs-attr">defer</span>: <span class="hljs-literal">true</span>,<br>    &#125;<br>  ]<br>&#125;);<br></code></pre></td></tr></table></figure></li>
-</ol>
+<h1 id="安全问题"><a href="#安全问题" class="headerlink" title="安全问题"></a>安全问题</h1><h2 id="HTTPS-中间人攻击"><a href="#HTTPS-中间人攻击" class="headerlink" title="HTTPS 中间人攻击"></a>HTTPS 中间人攻击</h2><p>由于非对称加密的算法都是<strong>公开</strong>的，所有人都可以自己生成一对公钥私钥。<br>例子：<br>当服务端向客户端返回公钥 A1 的时候，<strong>中间人截获</strong>公钥 A1 将其<strong>替换</strong>成自己的公钥 B1 传送给浏览器。<br>此时浏览器拿到的是中间人的公钥 B1 加密了密钥 K 发送给服务端，<strong>再次被中间人截获，</strong>中间人利用自己的私钥 B2 解密，得到密钥 K 在使用之前截获到的公钥 A1 加密传送给服务端，完成了通信，而且服务端和客服的没有任何感知。<br>出现中间人攻击的核心原因就是：<strong>客户端无法确认收到的公钥是不是真的是服务端发来的</strong>。  </p>
+<h2 id="CA-颁发机构"><a href="#CA-颁发机构" class="headerlink" title="CA 颁发机构"></a>CA 颁发机构</h2><p>数字证书颁发（CA）机构是受信任的第三方机构，颁发的数字证书为最终用户数据加密的公共密钥。在这个过程中，CA的责任是确保公司或用户接收一个唯一的证书是一个有效的身份的认证  。<br>（由于CA机构是一种公信身份，因此在系统或浏览器中会内置CA机构的证书和公钥信息）  </p>
+<p>服务端在使用 HTTPS 前，去经过认证的 CA 机构申请颁发一份 <strong>数字证书，</strong>数字证书里面包含：证书持有者、证书有效期、公钥等明文信息和<strong>数字签名</strong>，服务端将证书发送给客户端，客户端校验证书身份和要访问的网站身份确实一致以及数字签名一致后再进行后续的加密操作。</p>
+<h3 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h3><p>防伪技术，验证数字证书是否被修改过<br>数字签名过程：</p>
+<ul>
+<li>CA机构在颁发证书时对证书明文信息进行<strong>哈希运算</strong>得到<strong>摘要</strong></li>
+<li>将<strong>摘要</strong>用私钥进行<strong>加签（加密），</strong>得到<strong>数字签名</strong></li>
+</ul>
+<h3 id="校验数字证书"><a href="#校验数字证书" class="headerlink" title="校验数字证书"></a>校验数字证书</h3><ul>
+<li>客户端得到证书（明文信息和数字签名）， 用浏览器内置的 CA 机构的根证书校验证书有效性 ，有效才进行下一步</li>
+<li>客户端对证书的明文信息进行<strong>哈希运算</strong>得到<strong>摘要1</strong></li>
+<li>用公钥（<strong>内置的CA机构的公钥</strong>）进行<strong>解签（解密）</strong>，得到<strong>摘要2</strong>（由于CA机构是一种公信身份，因此在系统或浏览器中会内置CA机构的证书（根证书）和公钥信息）</li>
+<li>用证书里声明的哈希算法对明文Text部分进行哈希得到T</li>
+<li>当自己计算得到的哈希值<strong>摘要1</strong>与解密服务端的数字签名得到的哈希值<strong>摘要2，相等</strong>，表示证书可信，<strong>没有被篡改，否则被篡改。</strong></li>
+</ul>
 
                 
               </div>
@@ -717,27 +442,13 @@
     
       <span class="category-chain">
         
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
+  <a href="/categories/%E7%BD%91%E7%BB%9C/" class="category-chain-item">网络</a>
   
   
     <span>></span>
     
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue3/" class="category-chain-item">Vue3</a>
+  <a href="/categories/%E7%BD%91%E7%BB%9C/HTTPS/" class="category-chain-item">HTTPS</a>
   
-  
-    <span>></span>
-    
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/" class="category-chain-item">生态</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/" class="category-chain-item">nuxt3</a>
-  
-  
-
-  
-
   
 
   
@@ -753,7 +464,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Vue3/">#Vue3</a>
+        <a href="/tags/network/">#network</a>
       
     </div>
   
@@ -765,8 +476,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>添加百度统计代码</div>
-      <div>https://hgj1999.github.io/2023/04/26/web前端/Vue3/生态/nuxt3/03.添加百度统计代码/</div>
+      <div>HTTPS</div>
+      <div>https://hgj1999.github.io/2023/04/26/网络/02.HTTPS/</div>
     </div>
     <div class="license-meta">
       
@@ -810,21 +521,15 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/02.%E5%AF%BC%E8%88%AA%E6%A0%8F%E9%94%9A%E7%82%B9/" title="导航栏锚点">
+                      <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/03.%E6%B7%BB%E5%8A%A0%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81/" title="添加百度统计代码">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">导航栏锚点</span>
+                        <span class="hidden-mobile">添加百度统计代码</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
                   </article>
                   <article class="post-next col-6">
                     
-                    
-                      <a href="/2023/04/26/%E7%BD%91%E7%BB%9C/02.HTTPS/" title="HTTPS">
-                        <span class="hidden-mobile">HTTPS</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
                     
                   </article>
                 </div>
