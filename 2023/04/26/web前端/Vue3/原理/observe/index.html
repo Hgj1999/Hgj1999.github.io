@@ -1,0 +1,1122 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Glimmering Stars">
+  <meta name="keywords" content="技术博客">
+  
+    <meta name="description" content="前置知识点defineProperty**Object.defineProperty(obj, prop, descriptor)**会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象。  obj：要定义属性的对象 prop：要定义或修改的 属性名称 或 Symbol descriptor：要定义或修改的 属性描述符  本身的限制 目标只是对象的属性，而不是整个对象 一次只">
+<meta property="og:type" content="article">
+<meta property="og:title" content="observe">
+<meta property="og:url" content="https://hgj1999.github.io/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E5%8E%9F%E7%90%86/observe/index.html">
+<meta property="og:site_name" content="点点星光的技术博客">
+<meta property="og:description" content="前置知识点defineProperty**Object.defineProperty(obj, prop, descriptor)**会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象。  obj：要定义属性的对象 prop：要定义或修改的 属性名称 或 Symbol descriptor：要定义或修改的 属性描述符  本身的限制 目标只是对象的属性，而不是整个对象 一次只">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-04-26T02:05:41.000Z">
+<meta property="article:modified_time" content="2023-04-26T06:10:08.704Z">
+<meta property="article:author" content="Glimmering Stars">
+<meta property="article:tag" content="Vue3">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>observe - 点点星光的技术博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hgj1999.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Glimmering Stars&#39; Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="observe"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-04-26 10:05" pubdate>
+          2023年4月26日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          62 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="web前端"
+        id="heading-348c88b2fce1b2a4dca21addc7a9b510" role="tab" data-toggle="collapse" href="#collapse-348c88b2fce1b2a4dca21addc7a9b510"
+        aria-expanded="true"
+      >
+        web前端
+        <span class="list-group-count">(9)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-348c88b2fce1b2a4dca21addc7a9b510"
+           role="tabpanel" aria-labelledby="heading-348c88b2fce1b2a4dca21addc7a9b510">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Vue2"
+        id="heading-b5bc4fae52caba546fa469b33a1f7efd" role="tab" data-toggle="collapse" href="#collapse-b5bc4fae52caba546fa469b33a1f7efd"
+        aria-expanded="false"
+      >
+        Vue2
+        <span class="list-group-count">(7)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-b5bc4fae52caba546fa469b33a1f7efd"
+           role="tabpanel" aria-labelledby="heading-b5bc4fae52caba546fa469b33a1f7efd">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="原理"
+        id="heading-b6724cffe9b1e39a5652a348831a4e0d" role="tab" data-toggle="collapse" href="#collapse-b6724cffe9b1e39a5652a348831a4e0d"
+        aria-expanded="false"
+      >
+        原理
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-b6724cffe9b1e39a5652a348831a4e0d"
+           role="tabpanel" aria-labelledby="heading-b6724cffe9b1e39a5652a348831a4e0d">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/01.observe/" title="observe"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">observe</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/02.template/" title="template"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">template</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/03.init%20render/" title="init render"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">init render</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/04.update%20render/" title="update render"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">update render</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/06.computed/" title="computed"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">computed</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/05.watch/" title="watch"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">watch</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="生态"
+        id="heading-2bbb08c8b90b98a98ee6940d899b794d" role="tab" data-toggle="collapse" href="#collapse-2bbb08c8b90b98a98ee6940d899b794d"
+        aria-expanded="false"
+      >
+        生态
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-2bbb08c8b90b98a98ee6940d899b794d"
+           role="tabpanel" aria-labelledby="heading-2bbb08c8b90b98a98ee6940d899b794d">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="vxe-table"
+        id="heading-7e0799eacd75b19d26626e298e9212bf" role="tab" data-toggle="collapse" href="#collapse-7e0799eacd75b19d26626e298e9212bf"
+        aria-expanded="false"
+      >
+        vxe-table
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-7e0799eacd75b19d26626e298e9212bf"
+           role="tabpanel" aria-labelledby="heading-7e0799eacd75b19d26626e298e9212bf">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E7%94%9F%E6%80%81/vxe-table/%E8%B8%A9%E5%9D%91/" title="踩坑"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">踩坑</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Vue3"
+        id="heading-79dcf464d3e1b41635e194883d0c939a" role="tab" data-toggle="collapse" href="#collapse-79dcf464d3e1b41635e194883d0c939a"
+        aria-expanded="true"
+      >
+        Vue3
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-79dcf464d3e1b41635e194883d0c939a"
+           role="tabpanel" aria-labelledby="heading-79dcf464d3e1b41635e194883d0c939a">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="原理"
+        id="heading-b6724cffe9b1e39a5652a348831a4e0d" role="tab" data-toggle="collapse" href="#collapse-b6724cffe9b1e39a5652a348831a4e0d"
+        aria-expanded="true"
+      >
+        原理
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-b6724cffe9b1e39a5652a348831a4e0d"
+           role="tabpanel" aria-labelledby="heading-b6724cffe9b1e39a5652a348831a4e0d">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E5%8E%9F%E7%90%86/observe/" title="observe"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">observe</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="生态"
+        id="heading-2bbb08c8b90b98a98ee6940d899b794d" role="tab" data-toggle="collapse" href="#collapse-2bbb08c8b90b98a98ee6940d899b794d"
+        aria-expanded="false"
+      >
+        生态
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-2bbb08c8b90b98a98ee6940d899b794d"
+           role="tabpanel" aria-labelledby="heading-2bbb08c8b90b98a98ee6940d899b794d">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="nuxt3"
+        id="heading-fc69c1cad2d55a934383c957f4133484" role="tab" data-toggle="collapse" href="#collapse-fc69c1cad2d55a934383c957f4133484"
+        aria-expanded="false"
+      >
+        nuxt3
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-fc69c1cad2d55a934383c957f4133484"
+           role="tabpanel" aria-labelledby="heading-fc69c1cad2d55a934383c957f4133484">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/01.%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2%E5%A4%84%E7%90%86/" title="observe"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">observe</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">observe</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="前置知识点"><a href="#前置知识点" class="headerlink" title="前置知识点"></a>前置知识点</h1><h2 id="defineProperty"><a href="#defineProperty" class="headerlink" title="defineProperty"></a>defineProperty</h2><p><code>**Object.defineProperty(obj, prop, descriptor)**</code>会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性，并返回此对象。</p>
+<ul>
+<li>obj：要定义属性的对象</li>
+<li>prop：要定义或修改的 属性名称 或 Symbol</li>
+<li>descriptor：要定义或修改的 属性描述符</li>
+</ul>
+<h3 id="本身的限制"><a href="#本身的限制" class="headerlink" title="本身的限制"></a>本身的限制</h3><ul>
+<li>目标只是对象的属性，而不是整个对象</li>
+<li>一次只能 定义或者修改一个属性</li>
+</ul>
+<h3 id="在-Vue2-中的缺陷"><a href="#在-Vue2-中的缺陷" class="headerlink" title="在 Vue2 中的缺陷"></a>在 Vue2 中的缺陷</h3><ul>
+<li>只能拦截对象属性的<code>get</code>和<code>set</code>操作，比如无法拦截<code>delete</code>、<code>in</code>、<code>方法调用</code>等操作</li>
+<li>动态添加新属性（响应式丢失）<ul>
+<li>使用<code>this.$set()</code>设置新属性</li>
+</ul>
+</li>
+<li>通过<code>delete</code>删除属性（响应式丢失）<ul>
+<li>使用<code>this.$delete()</code>删除属性</li>
+</ul>
+</li>
+<li>使用数组索引 <code>替换/新增</code>元素（响应式丢失）<ul>
+<li>使用<code>this.$set()</code>设置新元素</li>
+</ul>
+</li>
+<li>使用数组<code>push</code>、<code>pop</code>、<code>shift</code>、<code>unshift</code>、<code>splice</code>、<code>sort</code>、<code>reverse</code>等原生方法改变原数组时（响应式丢失）<ul>
+<li>使用重写后<code>push</code>、<code>pop</code>、<code>shift</code>、<code>unshift</code>、<code>splice</code>、<code>sort</code>、<code>reverse</code>方法</li>
+</ul>
+</li>
+<li>一次只能对一个属性实现 数据劫持，需要遍历对所有属性进行劫持</li>
+<li>数据结构复杂时（属性值为 引用类型数据），需要通过 递归 进行处理</li>
+</ul>
+<h2 id="Proxy"><a href="#Proxy" class="headerlink" title="Proxy"></a>Proxy</h2><p><code>**Proxy**</code> 对象用于创建一个对象的代理，从而实现基本操作的拦截和自定义（如属性查找、赋值、枚举、函数调用等）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> p = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Proxy</span>(target, handler)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>new Proxy(target, handler)</code>针对整个对象进行代理</li>
+<li>代理对象的属性拥有读取、修改、删除、新增、是否存在属性，等相应的捕捉器<ul>
+<li><code>get()</code>：<code>读取</code>操作的捕捉器</li>
+<li><code>get()</code>：<code>设置</code>操作的捕捉器</li>
+<li><code>deleteProperty()</code>：<code>删除</code>操作的捕捉器</li>
+<li><code>ownKeys()</code>：<code>Object.getOwnPropertyNames</code>方法和<code>Object.getOwnPropertySymbols</code>方法的捕捉器</li>
+<li><code>has()</code>：<code>in</code>操作符的捕捉器</li>
+</ul>
+</li>
+</ul>
+<h2 id="Reflect"><a href="#Reflect" class="headerlink" title="Reflect"></a>Reflect</h2><p><code>**Reflect**</code>是一个内置的对象，它提供拦截 <code>**JavaScript**</code> 操作的方法，这些方法与 <code>Proxy handlers</code> 提供的的方法是一一对应的，且 <code>**Reflect**</code> 不是一个函数对象，即不能进行实例化，其所有属性和方法都是静态的（就像是<code>Math</code>对象）。</p>
+<ul>
+<li><code>Reflect.get(target, propertyKey[, receiver]) </code>获取对象身上某个属性的值，类似于 <code>target[name]</code></li>
+<li><code>Reflect.set(target, propertyKey, value[, receiver]) </code>将值分配给属性的函数。返回一个<code>Boolean</code>，如果更新成功，则返回<code>true</code></li>
+<li><code>Reflect.deleteProperty(target, propertyKey) </code>作为函数的<code>delete</code>操作符，相当于执行 <code>delete target[name]</code></li>
+<li><code>Reflect.ownKeys(target) </code>返回一个包含所有自身属性（不包含继承属性）的数组。(类似于 <code>Object.keys()</code>, 但不会受<code>enumerable</code> 影响)</li>
+<li><code>Reflect.has(target, propertyKey) </code>判断一个对象是否存在某个属性，和<code>in</code>运算符 的功能完全相同</li>
+</ul>
+<h1 id="数据劫持"><a href="#数据劫持" class="headerlink" title="数据劫持"></a>数据劫持</h1><h2 id="reactive"><a href="#reactive" class="headerlink" title="reactive()"></a>reactive()</h2><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">reactive</span>(<span class="hljs-params">target: <span class="hljs-built_in">Object</span></span>) &#123;<br>	<span class="hljs-comment">// 若目标对象是响应式的只读对象，则直接返回</span><br>  <span class="hljs-keyword">if</span>(<span class="hljs-title function_">isReadonly</span>(target)) &#123;<br>    <span class="hljs-keyword">return</span> target<br>  &#125;<br>  <span class="hljs-comment">// 否则将目标数据尝试变成响应式数据</span><br>  <span class="hljs-keyword">return</span> <span class="hljs-title function_">createdReactiveObject</span>(<br>    target,<br>    <span class="hljs-literal">false</span>,<br>    mutableHandlers, <span class="hljs-comment">// 对象类型的 handlers</span><br>    mutableCollectionHandlers, <span class="hljs-comment">// 集合类型的 handlers</span><br>    reacitveMap<br>  )<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="createReactiveObject"><a href="#createReactiveObject" class="headerlink" title="createReactiveObject()"></a>createReactiveObject()</h3><p>主要是做前置处理</p>
+<ul>
+<li>目标数据为 原始值类型，返回 原数据</li>
+<li>目标数据的<code>__v_raw</code>属性为<code>true</code>，且是非响应式数据，或 不是通过调用<code>readonly()</code>方法，则直接返回原数据</li>
+<li>目标数据已存在相应的<code>proxy</code>代理对象，则直接返回代理对象</li>
+<li>目标数据不存在对应的 白名单数据类型中，则直接返回原数据，支持响应式的数据类型如下<ul>
+<li>可扩展的对象（是否可以先加新属性）</li>
+<li><code>__v_skip</code>属性不存在或者值为 false 的对象</li>
+<li>数据类型为<code>Object</code>，<code>Array</code>，<code>Map</code>，<code>Set</code>，<code>WeakMap</code>，<code>WeakSet</code>的对象</li>
+<li>其他数据都统一被认为是无效的响应式数据对象</li>
+</ul>
+</li>
+<li>通过<code>Proxy</code>创建代理对象，根据目标数据类型选择不同的<code>Proxy handlers</code>（捕获器）</li>
+</ul>
+<p>具体的实现在对应数据类型的 捕获器 中，即下面源码中的<code>collectionHandlers</code>和<code>baseHandlers</code>，而它们则对应的是上述<code>reactive()</code>函数中的<code>createReactiveObject()</code>函数传递的<code>mutableCollectionHandlers</code>和<code>mutableHandlers</code>参数</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">createReactiveObject</span>(<span class="hljs-params"></span><br><span class="hljs-params">  target: Target,</span><br><span class="hljs-params">  isReadonly: <span class="hljs-built_in">boolean</span>,</span><br><span class="hljs-params">  baseHanlders: ProxyHandle&lt;<span class="hljs-built_in">any</span>&gt;,</span><br><span class="hljs-params">  collectionHandlers: ProxyHandler&lt;<span class="hljs-built_in">any</span>&gt;,</span><br><span class="hljs-params">  proxyMap: <span class="hljs-built_in">WeakMap</span>&lt;Target, <span class="hljs-built_in">any</span>&gt;</span><br><span class="hljs-params"></span>) &#123;<br>  <span class="hljs-comment">// 非对象类型直接返回</span><br>  <span class="hljs-keyword">if</span>(!<span class="hljs-title function_">isObject</span>(target)) &#123;<br>    <span class="hljs-keyword">if</span>(__DEV__) &#123;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">warn</span>(<span class="hljs-string">`value cannot be made reactive: <span class="hljs-subst">$&#123;<span class="hljs-built_in">String</span>(target)&#125;</span>`</span>)<br>    &#125;<br>    <span class="hljs-keyword">return</span> target<br>  &#125;<br>  <span class="hljs-comment">// 目标数据的 __v_raw 属性若为 true，且是【非响应式数据】或 不是通过调用 readonly() 方法，则直接返回</span><br>  <span class="hljs-keyword">if</span> (<br>    target[<span class="hljs-title class_">ReactiveFlags</span>.<span class="hljs-property">RAW</span>] &amp;&amp;<br>    !(isReadonly &amp;&amp; target[<span class="hljs-title class_">ReactiveFlags</span>.<span class="hljs-property">IS_REACTIVE</span>])<br>  ) &#123;<br>    <span class="hljs-keyword">return</span> target<br>  &#125;<br><br>  <span class="hljs-comment">// 目标对象已存在相应的 proxy 代理对象，则直接返回</span><br>  <span class="hljs-keyword">const</span> existingProxy = proxyMap.<span class="hljs-title function_">get</span>(target)<br>  <span class="hljs-keyword">if</span> (existingProxy) &#123;<br>    <span class="hljs-keyword">return</span> existingProxy<br>  &#125;<br>  <br>	<span class="hljs-comment">// 只有在白名单中的值类型才可以被代理监测，否则直接返回</span><br>  <span class="hljs-keyword">const</span> targetType = <span class="hljs-title function_">getTargetType</span>(target)<br>  <span class="hljs-keyword">if</span> (targetType === <span class="hljs-title class_">TargetType</span>.<span class="hljs-property">INVALID</span>) &#123;<br>    <span class="hljs-keyword">return</span> target     <br>  &#125;<br>  <br>  <span class="hljs-comment">// 创建代理对象</span><br>  <span class="hljs-keyword">const</span> proxy = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Proxy</span>(<br>    target,<br>    <span class="hljs-comment">// 若目标对象是集合类型（Set、Map）则使用集合类型对应的捕获器，否则使用基础捕获器</span><br>    targetType === <span class="hljs-title class_">TargetType</span>.<span class="hljs-property">COLLECTION</span> ? collectionHandlers : baseHandlers <br>  )<br><br>  <span class="hljs-comment">// 将对应的代理对象存储在 proxyMap 中</span><br>  proxyMap.<span class="hljs-title function_">set</span>(target, proxy)<br>  <span class="hljs-keyword">return</span> proxy<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="捕获器-Handles"><a href="#捕获器-Handles" class="headerlink" title="捕获器 Handles"></a>捕获器 Handles</h3><h4 id="对象类型（Object类型不包括Array）的捕获器-mutableHandlers"><a href="#对象类型（Object类型不包括Array）的捕获器-mutableHandlers" class="headerlink" title="对象类型（Object类型不包括Array）的捕获器 mutableHandlers"></a>对象类型（Object类型不包括Array）的捕获器 <code>mutableHandlers</code></h4><p><code>baseHandles.ts</code></p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-attr">mutableHandlers</span>: <span class="hljs-title class_">ProxyHandle</span>&lt;<span class="hljs-built_in">object</span>&gt; = &#123;<br>  get,<br>  set,<br>  deleteProperty,<br>  has,<br>  ownKeys,<br>&#125;<br></code></pre></td></tr></table></figure>
+<h5 id="get-捕获器"><a href="#get-捕获器" class="headerlink" title="get 捕获器"></a>get 捕获器</h5><ul>
+<li>当前数据对象为 数组，重写 数组对应方法</li>
+<li>当前数据对象为普通对象，且非 只读 的则通过<code>track(target, TrackOptypes.GET, key)</code>进行依赖收集<ul>
+<li>当前数据对象为浅层响应，直接返回其对应的属性值</li>
+<li>当前数据对象为 ref 类型，自动脱 ref</li>
+</ul>
+</li>
+<li>当前数据对象属性值是对象类型<ul>
+<li>当前数据对象为 只读的，则通过 <code>readonly(res)</code>向外返回其结果</li>
+<li>否则将当前属性值以<code>reactive(res)</code>向外返回 proxy 代理对象</li>
+</ul>
+</li>
+<li>否则直接向外返回对应的 属性值 <figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">createGetter</span>(<span class="hljs-params">isReadonly = <span class="hljs-literal">false</span>, shallow = <span class="hljs-literal">false</span></span>) &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">get</span>(<span class="hljs-params">target: Target, key: <span class="hljs-built_in">string</span> | sysbol, receiver: <span class="hljs-built_in">object</span></span>) &#123;<br>    <span class="hljs-comment">// 当直接通过指定 key 访问 vue 内置自定义的对象属性时，返回其对应的值</span><br>    <span class="hljs-keyword">if</span>(key === <span class="hljs-title class_">ReactiveFlags</span>.<span class="hljs-property">IS_REACTIVE</span>) &#123;<br>      <span class="hljs-keyword">return</span> !isReadonly<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (key === <span class="hljs-title class_">ReactiveFlags</span>.<span class="hljs-property">IS_READONLY</span>) &#123;<br>      <span class="hljs-keyword">return</span> isRedaonly<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (key === <span class="hljs-title class_">ReactiveFLags</span>.<span class="hljs-property">IS_SHALLOW</span>) &#123;<br>      <span class="hljs-keyword">return</span> shallow<br>    &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<br>      key === <span class="hljs-title class_">ReactiveFlags</span>.<span class="hljs-property">RAW</span> &amp;&amp;<br>      receiver ===<br>        (<br>          isReadonly<br>            ? shallow<br>              ? shallowReadonlyMap<br>              : readonlyMap<br>            : shallow<br>            ? shallowReactiveMap<br>            : reactiveMap<br>        ).<span class="hljs-title function_">get</span>(target)<br>    ) &#123;<br>      <span class="hljs-keyword">return</span> target<br>    &#125;<br>     <span class="hljs-comment">// 判断是否为数组类型</span><br>    <span class="hljs-keyword">const</span> targetIsArray = <span class="hljs-title function_">isArray</span>(target)<br><br>    <span class="hljs-comment">// 数组对象</span><br>    <span class="hljs-keyword">if</span> (!isReadonly &amp;&amp; targetIsArray &amp;&amp; <span class="hljs-title function_">hasOwn</span>(arrayInstrumentations, key)) &#123;<br>      <span class="hljs-comment">// 重写/增强数组的方法： </span><br>      <span class="hljs-comment">//  - 查找方法：includes、indexOf、lastIndexOf</span><br>      <span class="hljs-comment">//  - 修改原数组的方法：push、pop、unshift、shift、splice</span><br>      <span class="hljs-keyword">return</span> <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">get</span>(arrayInstrumentations, key, receiver)<br>    &#125;<br>    <span class="hljs-comment">// 获取对应属性值</span><br>    <span class="hljs-keyword">const</span> res = <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">get</span>(target, key, receiver)<br><br>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isSymbol</span>(key) ? builtInSymbols.<span class="hljs-title function_">has</span>(key) : <span class="hljs-title function_">isNonTrackableKeys</span>(key)) &#123;<br>      <span class="hljs-keyword">return</span> res<br>    &#125;<br><br>    <span class="hljs-comment">// 依赖收集</span><br>    <span class="hljs-keyword">if</span> (!isReadonly) &#123;<br>      <span class="hljs-title function_">track</span>(target, <span class="hljs-title class_">TrackOpTypes</span>.<span class="hljs-property">GET</span>, key)<br>    &#125;<br><br>    <span class="hljs-comment">// 浅层响应</span><br>    <span class="hljs-keyword">if</span> (shallow) &#123;<br>      <span class="hljs-keyword">return</span> res<br>    &#125;<br>    <span class="hljs-comment">// 若是 ref 类型响应式数据，会进行【自动脱 ref】，但不支持【数组】+【索引】的访问方式</span><br>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isRef</span>(res)) &#123;<br>      <span class="hljs-keyword">const</span> shouldUnwrap = !targetIsArray || !<span class="hljs-title function_">isIntegerKey</span>(key)<br>      <span class="hljs-keyword">return</span> shouldUnwrap ? res.<span class="hljs-property">value</span> : res<br>    &#125;<br>    <span class="hljs-comment">// 属性值是对象类型：</span><br>    <span class="hljs-comment">//  - 是只读属性，则通过 readonly() 返回结果，</span><br>    <span class="hljs-comment">//  - 且是非只读属性，则递归调用 reactive 向外返回 proxy 代理对象</span><br>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isObject</span>(res)) &#123;<br>      <span class="hljs-keyword">return</span> isReadonly ? <span class="hljs-title function_">readonly</span>(res) : <span class="hljs-title function_">reactive</span>(res)<br>    &#125;<br>    <span class="hljs-keyword">return</span> res<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h5 id="set捕获器"><a href="#set捕获器" class="headerlink" title="set捕获器"></a><code>set</code>捕获器</h5><p>边界值处理，以及<strong>更新属性值，并通过</strong><code>**targger()**</code>触发依赖更新</p>
+<figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">createSetter</span>(<span class="hljs-params">shallow = <span class="hljs-literal">false</span></span>) &#123;<br>  <span class="hljs-keyword">return</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">set</span>(<span class="hljs-params"></span><br><span class="hljs-params">    target: <span class="hljs-built_in">object</span>,</span><br><span class="hljs-params">    key: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">symbol</span>,</span><br><span class="hljs-params">    value: <span class="hljs-built_in">unknown</span>,</span><br><span class="hljs-params">    receiver: <span class="hljs-built_in">object</span></span><br><span class="hljs-params">  </span>): <span class="hljs-built_in">boolean</span> &#123;<br>    <span class="hljs-comment">// 保存旧的数据</span><br>    <span class="hljs-keyword">let</span> oldValue = (target <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>)[key]<br><br>    <span class="hljs-comment">// 若原数据值属于 只读 且 ref 类型，并且新数据值不属于 ref 类型，则意味着修改失败</span><br>    <span class="hljs-keyword">if</span> (<span class="hljs-title function_">isReadonly</span>(oldValue) &amp;&amp; <span class="hljs-title function_">isRef</span>(oldValue) &amp;&amp; !<span class="hljs-title function_">isRef</span>(value)) &#123;<br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span><br>    &#125;<br><br>    <span class="hljs-keyword">if</span> (!shallow &amp;&amp; !<span class="hljs-title function_">isReadonly</span>(value)) &#123;<br>      <span class="hljs-keyword">if</span> (!<span class="hljs-title function_">isShallow</span>(value)) &#123;<br>        value = <span class="hljs-title function_">toRaw</span>(value)<br>        oldValue = <span class="hljs-title function_">toRaw</span>(oldValue)<br>      &#125;<br>      <span class="hljs-keyword">if</span> (!<span class="hljs-title function_">isArray</span>(target) &amp;&amp; <span class="hljs-title function_">isRef</span>(oldValue) &amp;&amp; !<span class="hljs-title function_">isRef</span>(value)) &#123;<br>        oldValue.<span class="hljs-property">value</span> = value<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span><br>      &#125;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>      <span class="hljs-comment">// in shallow mode, objects are set as-is regardless of reactive or not</span><br>    &#125;<br><br>    <span class="hljs-comment">// 是否存在对应的 key</span><br>    <span class="hljs-keyword">const</span> hadKey =<br>      <span class="hljs-title function_">isArray</span>(target) &amp;&amp; <span class="hljs-title function_">isIntegerKey</span>(key)<br>        ? <span class="hljs-title class_">Number</span>(key) &lt; target.<span class="hljs-property">length</span><br>        : <span class="hljs-title function_">hasOwn</span>(target, key)<br><br>    <span class="hljs-comment">// 设置对应值</span><br>    <span class="hljs-keyword">const</span> result = <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">set</span>(target, key, value, receiver)<br><br>    <span class="hljs-comment">// 若目标对象是原始原型链上的内容（非自定义添加），则不触发依赖更新</span><br>    <span class="hljs-keyword">if</span> (target === <span class="hljs-title function_">toRaw</span>(receiver)) &#123;<br>      <span class="hljs-keyword">if</span> (!hadKey) &#123;<br>        <span class="hljs-comment">// 目标对象不存在对应的 key，则为新增操作</span><br>        <span class="hljs-title function_">trigger</span>(target, <span class="hljs-title class_">TriggerOpTypes</span>.<span class="hljs-property">ADD</span>, key, value)<br>      &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-title function_">hasChanged</span>(value, oldValue)) &#123;<br>        <span class="hljs-comment">// 目标对象存在对应的值，则为修改操作</span><br>        <span class="hljs-title function_">trigger</span>(target, <span class="hljs-title class_">TriggerOpTypes</span>.<span class="hljs-property">SET</span>, key, value, oldValue)<br>      &#125;<br>    &#125;<br><br>    <span class="hljs-comment">// 返回修改结果</span><br>    <span class="hljs-keyword">return</span> result<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<h5 id="deleteProperty-amp-has-amp-ownKeys-捕获器"><a href="#deleteProperty-amp-has-amp-ownKeys-捕获器" class="headerlink" title="deleteProperty &amp; has &amp; ownKeys 捕获器"></a><code>deleteProperty</code> &amp; <code>has</code> &amp; <code>ownKeys</code> 捕获器</h5><figure class="highlight typescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs typescript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">deleteProperty</span>(<span class="hljs-params">target: <span class="hljs-built_in">object</span>, key: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">symbol</span></span>): <span class="hljs-built_in">boolean</span> &#123;<br>  <span class="hljs-keyword">const</span> hadKty = <span class="hljs-title function_">hasOwn</span>(target, key)<br>  <span class="hljs-keyword">const</span> oldValue = (target <span class="hljs-keyword">as</span> <span class="hljs-built_in">any</span>)[key]<br>  <span class="hljs-keyword">const</span> result = <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">deleteProperty</span>(target, key)<br>  <span class="hljs-comment">// 目标对象存在对应的 key，并且成功删除，才会触发依赖更新</span><br>  <span class="hljs-keyword">if</span> (result &amp;&amp; hadKey) &#123;<br>    <span class="hljs-title function_">trigger</span>(target, <span class="hljs-title class_">TriggerOpTypes</span>.<span class="hljs-property">DELETE</span>, key, <span class="hljs-literal">undefined</span>, oldValue)<br>  &#125;<br>  <span class="hljs-keyword">return</span> result<br>&#125;<br><span class="hljs-keyword">function</span> <span class="hljs-title function_">has</span>(<span class="hljs-params">target: <span class="hljs-built_in">object</span>, key: <span class="hljs-built_in">string</span> | <span class="hljs-built_in">symbol</span></span>): <span class="hljs-built_in">boolean</span> &#123;<br>  <span class="hljs-keyword">const</span> result = <span class="hljs-title class_">Reflect</span>.<span class="hljs-title function_">has</span>(target, key)<br>  <span class="hljs-keyword">if</span> (!<span class="hljs-title function_">isSymbol</span>(key) || !builtInSymbols.<span class="hljs-title function_">has</span>(key)) &#123;<br>    <span class="hljs-title function_">track</span>(target, <span class="hljs-title class_">TrackOpTypes</span>.<span class="hljs-property">HAS</span>, key)<br>  &#125;<br>  <span class="hljs-keyword">return</span> result<br>&#125;<br><span class="hljs-keyword">function</span> <span class="hljs-title function_">ownKeys</span>(<span class="hljs-params">target: <span class="hljs-built_in">object</span></span>): (<span class="hljs-built_in">string</span> | <span class="hljs-built_in">symbol</span>)[] &#123;<br>  <span class="hljs-title function_">track</span>(target, <span class="hljs-title class_">TrackOpTypes</span>.<span class="hljs-property">ITERATE</span>, <span class="hljs-title function_">isArray</span>(target) ? <span class="hljs-string">&#x27;length&#x27;</span> : <span class="hljs-variable constant_">ITERATE_KEY</span>)<br>  <span class="hljs-keyword">return</span> <span class="hljs-title class_">REflect</span>.<span class="hljs-title function_">ownKeys</span>(target)<br>&#125;<br><br></code></pre></td></tr></table></figure>
+<h5 id="数组类型捕获器-arrayInstrumentations"><a href="#数组类型捕获器-arrayInstrumentations" class="headerlink" title="数组类型捕获器 arrayInstrumentations"></a>数组类型捕获器 <code>arrayInstrumentations</code></h5><p>数组由于<code>index</code>和<code>length</code>会相互影响，所以需要特殊处理</p>
+<ul>
+<li><code>arr[1] = 2</code>会隐式修改<code>length</code>的属性值</li>
+<li><code>arr.lenght = 0</code>会导致原索引位置的值发生变更</li>
+</ul>
+<p>为了能够合理触发和 <code>length</code> 相关副作用函数的执行，在 <code>set()</code> 捕获器中会判断当前操作的类型：</p>
+<ul>
+<li>当<code>Number(key) &lt; target.length</code>证明是修改操作，对应<code>TriggerOptypes.SET</code>类型，即当前操作不会改变<code>length</code>的值，不需要 触发和 <code>length</code>有关副作用函数的执行</li>
+<li>当<code>Number(key) &gt;= target.length</code>证明是新增操作，<code>TriggerOpTypes.ADD</code>类型，即当前操作会改变<code>length</code>的值，需要触发和<code>length</code>相关副作用函数的执行</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue3/" class="category-chain-item">Vue3</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue3/%E5%8E%9F%E7%90%86/" class="category-chain-item">原理</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Vue3/">#Vue3</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>observe</div>
+      <div>https://hgj1999.github.io/2023/04/26/web前端/Vue3/原理/observe/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Glimmering Stars</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年4月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/01.observe/" title="observe">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">observe</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/01.%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2%E5%A4%84%E7%90%86/" title="observe">
+                        <span class="hidden-mobile">observe</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+      Ever Forward
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
