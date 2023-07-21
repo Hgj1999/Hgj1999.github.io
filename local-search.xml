@@ -894,9 +894,67 @@
   
   
   <entry>
+    <title>HTTPS</title>
+    <link href="/2023/04/26/%E7%BD%91%E7%BB%9C/02.HTTPS/"/>
+    <url>/2023/04/26/%E7%BD%91%E7%BB%9C/02.HTTPS/</url>
+    
+    <content type="html"><![CDATA[<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p><strong>HTTPS &#x3D; HTTP + SSL&#x2F;TLS</strong><br><strong>HTTP 明文传输，不安全</strong><br><strong>利用 HTTP 传输数据，利用 SSL&#x2F;TLS 加密数据包</strong></p><h2 id="密码学概念"><a href="#密码学概念" class="headerlink" title="密码学概念"></a>密码学概念</h2><p><strong>明文</strong>：明文指的是未被加密过的原始数据。<br><strong>密文</strong>：明文被某种加密算法加密之后，会变成密文，从而确保原始数据的安全。密文也可以被解密，得到原始的明文。<br><strong>密钥</strong>：密钥是一种参数，它是在明文转换为密文或将密文转换为明文的算法中输入的参数。密钥分为对称密钥与非对称密钥，分别应用在对称加密和非对称加密上。</p><p><strong>对称加密（私钥加密）：</strong> 信息的发送方和接收方使用同一个密钥去加密和解密数据。<br>其加密过程如下：<strong>明文 + 加密算法 + 私钥 &#x3D;&gt; 密文</strong><br>解密过程如下： <strong>密文 + 解密算法 + 私钥 &#x3D;&gt; 明文</strong><br><strong>优点：</strong>加密和解密速度快，适合于对大数据量进行加密 。<br><strong>缺点：</strong>算法公开， 一旦私钥被泄露，那么密文就很容易被破解  ，密钥安全管理困难  </p><p><strong>非对称加密（公钥加密）：</strong>使用一对密钥（公钥和私钥），服务端保存私钥，客户端保存公钥。私钥不能对外泄漏。公钥任何客户端都可以获取到，用公钥或者私钥中的任何一个进行加密，用另一个进行解密。<br>被公钥加密过的密文只能被私钥解密，过程如下：<br><strong>明文 + 加密算法 + 公钥 &#x3D;&gt; 密文， 密文 + 解密算法 + 私钥 &#x3D;&gt; 明文</strong><br>被私钥加密过的密文只能被公钥解密，过程如下：<br><strong>明文 + 加密算法 + 私钥 &#x3D;&gt; 密文， 密文 + 解密算法 + 公钥 &#x3D;&gt; 明文</strong><br><strong>优点：</strong>安全性高（得不到私钥就无法解密）<br><strong>缺点：</strong>算法公开，加密和解密花费时间长、速度慢，只适合对少量数据进行加密。  </p><h1 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h1><p><strong>SSL</strong>（Secure Sockets Layer）安全套接层和** TLS<strong>（Transport Layer Security）传输层安全协议其实是</strong>一套东西<strong>。</strong>HTTPS** 需要使用一套 <strong>CA 数字证书，</strong>证书附带了一个<strong>公钥Pub，</strong>与之对应的**私钥 Private **保留在服务端不公开。</p><h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><ol><li>用户在浏览器发起 HTTPS 请求，默认使用服务端的443端口进行连接</li><li>服务端收到请求，返回配置好的包含<strong>公钥Pub的</strong>数字证书返回给客户端</li><li>客户端收到<strong>证书，</strong>校验合法性，主要是：是否在有效期内、证书的域名与请求的域名是否匹配， 上一级证书是否有效（递归判断，直到判断到系统内置或浏览器配置好的根证书），如果不通过，则显示HTTPS警告信息，如果通过则继续；  </li><li>客户端生成一个用于对称加密的<strong>随机key</strong>，并用证书内的<strong>公钥Pub</strong>进行非对称加密，发送给服务端</li><li>服务端收到<strong>随机key</strong>的密文，使用与<strong>公钥Pub</strong>配对的<strong>私钥Private</strong>进行解密，得到<strong>随机key</strong>的明文</li><li>服务端使用客户端发送过来的<strong>随机key</strong>对要传输的HTTP数据进行对称加密（加密的私钥就是这个<strong>随机key</strong>），将密文返回给客户端</li><li>客户端使用<strong>随机key</strong>对称解密密文，得到HTTP数据明文</li><li>后续HTTPS请求使用之前交换好的<strong>随机Key</strong>进行对称加解密。</li></ol><h1 id="安全问题"><a href="#安全问题" class="headerlink" title="安全问题"></a>安全问题</h1><h2 id="HTTPS-中间人攻击"><a href="#HTTPS-中间人攻击" class="headerlink" title="HTTPS 中间人攻击"></a>HTTPS 中间人攻击</h2><p>由于非对称加密的算法都是<strong>公开</strong>的，所有人都可以自己生成一对公钥私钥。<br>例子：<br>当服务端向客户端返回公钥 A1 的时候，<strong>中间人截获</strong>公钥 A1 将其<strong>替换</strong>成自己的公钥 B1 传送给浏览器。<br>此时浏览器拿到的是中间人的公钥 B1 加密了密钥 K 发送给服务端，<strong>再次被中间人截获，</strong>中间人利用自己的私钥 B2 解密，得到密钥 K 在使用之前截获到的公钥 A1 加密传送给服务端，完成了通信，而且服务端和客服的没有任何感知。<br>出现中间人攻击的核心原因就是：<strong>客户端无法确认收到的公钥是不是真的是服务端发来的</strong>。  </p><h2 id="CA-颁发机构"><a href="#CA-颁发机构" class="headerlink" title="CA 颁发机构"></a>CA 颁发机构</h2><p>数字证书颁发（CA）机构是受信任的第三方机构，颁发的数字证书为最终用户数据加密的公共密钥。在这个过程中，CA的责任是确保公司或用户接收一个唯一的证书是一个有效的身份的认证  。<br>（由于CA机构是一种公信身份，因此在系统或浏览器中会内置CA机构的证书和公钥信息）  </p><p>服务端在使用 HTTPS 前，去经过认证的 CA 机构申请颁发一份 <strong>数字证书，</strong>数字证书里面包含：证书持有者、证书有效期、公钥等明文信息和<strong>数字签名</strong>，服务端将证书发送给客户端，客户端校验证书身份和要访问的网站身份确实一致以及数字签名一致后再进行后续的加密操作。</p><h3 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h3><p>防伪技术，验证数字证书是否被修改过<br>数字签名过程：</p><ul><li>CA机构在颁发证书时对证书明文信息进行<strong>哈希运算</strong>得到<strong>摘要</strong></li><li>将<strong>摘要</strong>用私钥进行<strong>加签（加密），</strong>得到<strong>数字签名</strong></li></ul><h3 id="校验数字证书"><a href="#校验数字证书" class="headerlink" title="校验数字证书"></a>校验数字证书</h3><ul><li>客户端得到证书（明文信息和数字签名）， 用浏览器内置的 CA 机构的根证书校验证书有效性 ，有效才进行下一步</li><li>客户端对证书的明文信息进行<strong>哈希运算</strong>得到<strong>摘要1</strong></li><li>用公钥（<strong>内置的CA机构的公钥</strong>）进行<strong>解签（解密）</strong>，得到<strong>摘要2</strong>（由于CA机构是一种公信身份，因此在系统或浏览器中会内置CA机构的证书（根证书）和公钥信息）</li><li>用证书里声明的哈希算法对明文Text部分进行哈希得到T</li><li>当自己计算得到的哈希值<strong>摘要1</strong>与解密服务端的数字签名得到的哈希值<strong>摘要2，相等</strong>，表示证书可信，<strong>没有被篡改，否则被篡改。</strong></li></ul>]]></content>
+    
+    
+    <categories>
+      
+      <category>网络</category>
+      
+      <category>HTTPS</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>network</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>错误页面处理</title>
+    <link href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/02.%E9%94%99%E8%AF%AF%E6%97%A5%E5%BF%97%E8%AE%B0%E5%BD%95%E6%96%B9%E6%A1%88/"/>
+    <url>/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/02.%E9%94%99%E8%AF%AF%E6%97%A5%E5%BF%97%E8%AE%B0%E5%BD%95%E6%96%B9%E6%A1%88/</url>
+    
+    <content type="html"><![CDATA[<h1 id="存储到项目根目录下的logs-error-log"><a href="#存储到项目根目录下的logs-error-log" class="headerlink" title="存储到项目根目录下的logs/error.log"></a>存储到项目根目录下的<code>logs/error.log</code></h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> winston <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;winston&#x27;</span>;<br><br><span class="hljs-keyword">const</span> logger = winston.<span class="hljs-title function_">createLogger</span>(&#123;<br>  <span class="hljs-attr">transports</span>: [<br>    <span class="hljs-keyword">new</span> winston.<span class="hljs-property">transports</span>.<span class="hljs-title class_">File</span>(&#123;<br>      <span class="hljs-attr">filename</span>: <span class="hljs-string">&#x27;logs/error.log&#x27;</span>,<br>      <span class="hljs-attr">level</span>: <span class="hljs-string">&#x27;error&#x27;</span>,<br>      <span class="hljs-attr">format</span>: winston.<span class="hljs-property">format</span>.<span class="hljs-title function_">combine</span>(<br>        winston.<span class="hljs-property">format</span>.<span class="hljs-title function_">timestamp</span>(&#123; <span class="hljs-attr">format</span>: <span class="hljs-string">&#x27;YYYY-MM-DDTHH:mm:ss.SSSZ&#x27;</span> &#125;),<br>        winston.<span class="hljs-property">format</span>.<span class="hljs-title function_">json</span>(),<br>      )<br>    &#125;)<br>  ]<br>&#125;);<br><span class="hljs-keyword">const</span> <span class="hljs-title function_">useRecordErrorLog</span> = (<span class="hljs-params">error</span>) =&gt; &#123;<br>  logger.<span class="hljs-title function_">error</span>(error)<br>&#125;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> useRecordErrorLog<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>web前端</category>
+      
+      <category>Vue3</category>
+      
+      <category>生态</category>
+      
+      <category>nuxt3</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Vue3</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>导航栏锚点</title>
-    <link href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/02.%E5%AF%BC%E8%88%AA%E6%A0%8F%E9%94%9A%E7%82%B9/"/>
-    <url>/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/02.%E5%AF%BC%E8%88%AA%E6%A0%8F%E9%94%9A%E7%82%B9/</url>
+    <link href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/03.%E5%AF%BC%E8%88%AA%E6%A0%8F%E9%94%9A%E7%82%B9/"/>
+    <url>/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/03.%E5%AF%BC%E8%88%AA%E6%A0%8F%E9%94%9A%E7%82%B9/</url>
     
     <content type="html"><![CDATA[<h1 id="导航栏部分"><a href="#导航栏部分" class="headerlink" title="导航栏部分"></a>导航栏部分</h1><ol><li>利用<code>NuxtLink</code>组件实现跳转<ol><li>注意，如果要跳转到其他项目的地址，此时要给<code>link</code>前面拼接上<code>window.location.origin</code></li></ol></li><li><code>link</code>后添加上对应页面，对应锚点的<code>id</code>，此处可以用<code>#targetID</code>这种形式拼接</li></ol><h2 id="对应页面"><a href="#对应页面" class="headerlink" title="对应页面"></a>对应页面</h2><ol><li>每个锚点添加上<code>id=&quot;xxx&quot;</code></li><li>使用<code>useAnchor()</code></li></ol><h1 id="useAnchor实现"><a href="#useAnchor实现" class="headerlink" title="useAnchor实现"></a>useAnchor实现</h1><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; onMounted &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vue&#x27;</span>;<br><br><span class="hljs-keyword">const</span> <span class="hljs-title function_">useAnchor</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">scrollToAnchor</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>    <span class="hljs-keyword">const</span> targetId = <span class="hljs-variable language_">window</span>.<span class="hljs-property">location</span>.<span class="hljs-property">hash</span>.<span class="hljs-title function_">substr</span>(<span class="hljs-number">1</span>);<br>    <span class="hljs-keyword">const</span> targetElement = <span class="hljs-variable language_">document</span>.<span class="hljs-title function_">getElementById</span>(targetId);<br>    <span class="hljs-keyword">if</span> (targetElement) &#123;<br>      targetElement.<span class="hljs-title function_">scrollIntoView</span>();<br>    &#125;<br>  &#125;;<br><br>  <span class="hljs-title function_">onMounted</span>(scrollToAnchor);<br>&#125;;<br><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> useAnchor;<br></code></pre></td></tr></table></figure>]]></content>
     
@@ -926,8 +984,8 @@
   
   <entry>
     <title>添加百度统计代码</title>
-    <link href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/03.%E6%B7%BB%E5%8A%A0%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81/"/>
-    <url>/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/03.%E6%B7%BB%E5%8A%A0%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81/</url>
+    <link href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/04.%E6%B7%BB%E5%8A%A0%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81/"/>
+    <url>/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/04.%E6%B7%BB%E5%8A%A0%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81/</url>
     
     <content type="html"><![CDATA[<h1 id="设置单页面模式"><a href="#设置单页面模式" class="headerlink" title="设置单页面模式"></a>设置单页面模式</h1><ol><li>首先去百度统计PC端首页-&gt;使用规则-&gt;单页设置-&gt;启用单页应用数据统计</li><li>在项目入口文件<code>app.vue</code>引入百度统计代码<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&lt;script setup&gt;<br><span class="hljs-keyword">const</span> route = <span class="hljs-title function_">useRoute</span>()<br><span class="hljs-title function_">useHead</span>(&#123;<br>  <span class="hljs-attr">script</span>: [<br>    &#123;<br>      <span class="hljs-attr">src</span>: <span class="hljs-string">&#x27;https://hm.baidu.com/hm.js?your key&#x27;</span><br>    &#125;<br>  ]<br>&#125;)<br><span class="hljs-title function_">watch</span>(route, <span class="hljs-function">() =&gt;</span> &#123;<br>  <span class="hljs-keyword">if</span> (_hmt) &#123;<br>    _hmt.<span class="hljs-title function_">push</span>([<span class="hljs-string">&#x27;_trackPageview&#x27;</span>, route.<span class="hljs-property">path</span>])<br>  &#125;<br>&#125;)<br>&lt;/script&gt;<br></code></pre></td></tr></table></figure></li></ol><h2 id="不设置单页模式"><a href="#不设置单页模式" class="headerlink" title="不设置单页模式"></a>不设置单页模式</h2><ol><li>对应的每个页面引入百度统计代码<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-title function_">useHead</span>(&#123;<br><br>  <span class="hljs-attr">script</span>: [<br>    &#123;<br>      <span class="hljs-attr">src</span>: <span class="hljs-string">&#x27;https://hm.baidu.com/hm.js?your key&#x27;</span>,<br>      <span class="hljs-attr">bodyClose</span>: <span class="hljs-literal">false</span>, <span class="hljs-comment">// false 添加到 head标签内</span><br>      <span class="hljs-attr">async</span>: <span class="hljs-literal">true</span>,<br>      <span class="hljs-attr">defer</span>: <span class="hljs-literal">true</span>,<br>    &#125;<br>  ]<br>&#125;);<br></code></pre></td></tr></table></figure></li></ol>]]></content>
     
@@ -948,33 +1006,6 @@
     <tags>
       
       <tag>Vue3</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>HTTPS</title>
-    <link href="/2023/04/26/%E7%BD%91%E7%BB%9C/02.HTTPS/"/>
-    <url>/2023/04/26/%E7%BD%91%E7%BB%9C/02.HTTPS/</url>
-    
-    <content type="html"><![CDATA[<h1 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h1><p><strong>HTTPS &#x3D; HTTP + SSL&#x2F;TLS</strong><br><strong>HTTP 明文传输，不安全</strong><br><strong>利用 HTTP 传输数据，利用 SSL&#x2F;TLS 加密数据包</strong></p><h2 id="密码学概念"><a href="#密码学概念" class="headerlink" title="密码学概念"></a>密码学概念</h2><p><strong>明文</strong>：明文指的是未被加密过的原始数据。<br><strong>密文</strong>：明文被某种加密算法加密之后，会变成密文，从而确保原始数据的安全。密文也可以被解密，得到原始的明文。<br><strong>密钥</strong>：密钥是一种参数，它是在明文转换为密文或将密文转换为明文的算法中输入的参数。密钥分为对称密钥与非对称密钥，分别应用在对称加密和非对称加密上。</p><p><strong>对称加密（私钥加密）：</strong> 信息的发送方和接收方使用同一个密钥去加密和解密数据。<br>其加密过程如下：<strong>明文 + 加密算法 + 私钥 &#x3D;&gt; 密文</strong><br>解密过程如下： <strong>密文 + 解密算法 + 私钥 &#x3D;&gt; 明文</strong><br><strong>优点：</strong>加密和解密速度快，适合于对大数据量进行加密 。<br><strong>缺点：</strong>算法公开， 一旦私钥被泄露，那么密文就很容易被破解  ，密钥安全管理困难  </p><p><strong>非对称加密（公钥加密）：</strong>使用一对密钥（公钥和私钥），服务端保存私钥，客户端保存公钥。私钥不能对外泄漏。公钥任何客户端都可以获取到，用公钥或者私钥中的任何一个进行加密，用另一个进行解密。<br>被公钥加密过的密文只能被私钥解密，过程如下：<br><strong>明文 + 加密算法 + 公钥 &#x3D;&gt; 密文， 密文 + 解密算法 + 私钥 &#x3D;&gt; 明文</strong><br>被私钥加密过的密文只能被公钥解密，过程如下：<br><strong>明文 + 加密算法 + 私钥 &#x3D;&gt; 密文， 密文 + 解密算法 + 公钥 &#x3D;&gt; 明文</strong><br><strong>优点：</strong>安全性高（得不到私钥就无法解密）<br><strong>缺点：</strong>算法公开，加密和解密花费时间长、速度慢，只适合对少量数据进行加密。  </p><h1 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h1><p><strong>SSL</strong>（Secure Sockets Layer）安全套接层和** TLS<strong>（Transport Layer Security）传输层安全协议其实是</strong>一套东西<strong>。</strong>HTTPS** 需要使用一套 <strong>CA 数字证书，</strong>证书附带了一个<strong>公钥Pub，</strong>与之对应的**私钥 Private **保留在服务端不公开。</p><h2 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h2><ol><li>用户在浏览器发起 HTTPS 请求，默认使用服务端的443端口进行连接</li><li>服务端收到请求，返回配置好的包含<strong>公钥Pub的</strong>数字证书返回给客户端</li><li>客户端收到<strong>证书，</strong>校验合法性，主要是：是否在有效期内、证书的域名与请求的域名是否匹配， 上一级证书是否有效（递归判断，直到判断到系统内置或浏览器配置好的根证书），如果不通过，则显示HTTPS警告信息，如果通过则继续；  </li><li>客户端生成一个用于对称加密的<strong>随机key</strong>，并用证书内的<strong>公钥Pub</strong>进行非对称加密，发送给服务端</li><li>服务端收到<strong>随机key</strong>的密文，使用与<strong>公钥Pub</strong>配对的<strong>私钥Private</strong>进行解密，得到<strong>随机key</strong>的明文</li><li>服务端使用客户端发送过来的<strong>随机key</strong>对要传输的HTTP数据进行对称加密（加密的私钥就是这个<strong>随机key</strong>），将密文返回给客户端</li><li>客户端使用<strong>随机key</strong>对称解密密文，得到HTTP数据明文</li><li>后续HTTPS请求使用之前交换好的<strong>随机Key</strong>进行对称加解密。</li></ol><h1 id="安全问题"><a href="#安全问题" class="headerlink" title="安全问题"></a>安全问题</h1><h2 id="HTTPS-中间人攻击"><a href="#HTTPS-中间人攻击" class="headerlink" title="HTTPS 中间人攻击"></a>HTTPS 中间人攻击</h2><p>由于非对称加密的算法都是<strong>公开</strong>的，所有人都可以自己生成一对公钥私钥。<br>例子：<br>当服务端向客户端返回公钥 A1 的时候，<strong>中间人截获</strong>公钥 A1 将其<strong>替换</strong>成自己的公钥 B1 传送给浏览器。<br>此时浏览器拿到的是中间人的公钥 B1 加密了密钥 K 发送给服务端，<strong>再次被中间人截获，</strong>中间人利用自己的私钥 B2 解密，得到密钥 K 在使用之前截获到的公钥 A1 加密传送给服务端，完成了通信，而且服务端和客服的没有任何感知。<br>出现中间人攻击的核心原因就是：<strong>客户端无法确认收到的公钥是不是真的是服务端发来的</strong>。  </p><h2 id="CA-颁发机构"><a href="#CA-颁发机构" class="headerlink" title="CA 颁发机构"></a>CA 颁发机构</h2><p>数字证书颁发（CA）机构是受信任的第三方机构，颁发的数字证书为最终用户数据加密的公共密钥。在这个过程中，CA的责任是确保公司或用户接收一个唯一的证书是一个有效的身份的认证  。<br>（由于CA机构是一种公信身份，因此在系统或浏览器中会内置CA机构的证书和公钥信息）  </p><p>服务端在使用 HTTPS 前，去经过认证的 CA 机构申请颁发一份 <strong>数字证书，</strong>数字证书里面包含：证书持有者、证书有效期、公钥等明文信息和<strong>数字签名</strong>，服务端将证书发送给客户端，客户端校验证书身份和要访问的网站身份确实一致以及数字签名一致后再进行后续的加密操作。</p><h3 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h3><p>防伪技术，验证数字证书是否被修改过<br>数字签名过程：</p><ul><li>CA机构在颁发证书时对证书明文信息进行<strong>哈希运算</strong>得到<strong>摘要</strong></li><li>将<strong>摘要</strong>用私钥进行<strong>加签（加密），</strong>得到<strong>数字签名</strong></li></ul><h3 id="校验数字证书"><a href="#校验数字证书" class="headerlink" title="校验数字证书"></a>校验数字证书</h3><ul><li>客户端得到证书（明文信息和数字签名）， 用浏览器内置的 CA 机构的根证书校验证书有效性 ，有效才进行下一步</li><li>客户端对证书的明文信息进行<strong>哈希运算</strong>得到<strong>摘要1</strong></li><li>用公钥（<strong>内置的CA机构的公钥</strong>）进行<strong>解签（解密）</strong>，得到<strong>摘要2</strong>（由于CA机构是一种公信身份，因此在系统或浏览器中会内置CA机构的证书（根证书）和公钥信息）</li><li>用证书里声明的哈希算法对明文Text部分进行哈希得到T</li><li>当自己计算得到的哈希值<strong>摘要1</strong>与解密服务端的数字签名得到的哈希值<strong>摘要2，相等</strong>，表示证书可信，<strong>没有被篡改，否则被篡改。</strong></li></ul>]]></content>
-    
-    
-    <categories>
-      
-      <category>网络</category>
-      
-      <category>HTTPS</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>network</tag>
       
     </tags>
     
