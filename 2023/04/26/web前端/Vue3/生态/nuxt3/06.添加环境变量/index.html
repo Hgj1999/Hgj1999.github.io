@@ -16,22 +16,24 @@
   <meta name="author" content="Glimmering Stars">
   <meta name="keywords" content="技术博客">
   
-    <meta name="description" content="数据初始化Vue 实例化过程，Vue 为一个构造函数，传入的参数是一个对象，可称之为 options 。 123456new Vue(&amp;#123;  el: &quot;#app&quot;,  router,  store,  render: (h) &#x3D;&gt; h(App),&amp;#125;); 接下来就是初始化 Vue 工作 12345678910&#x2F;&#x2F; src&#x2F;index.jsimport &amp;#">
+    <meta name="description" content="基于vitenuxt.confit.ts123456789101112import &amp;#123; loadEnv &amp;#125; from &amp;#x27;vite&amp;#x27;interface VITE_ENV_CONFIG &amp;#123;  VITE_PACK_URL: string&amp;#125;const envScript &#x3D; (process.env as any).npm_lifecycle_s">
 <meta property="og:type" content="article">
-<meta property="og:title" content="observe">
-<meta property="og:url" content="https://hgj1999.github.io/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/01.observe/index.html">
+<meta property="og:title" content="添加环境变量">
+<meta property="og:url" content="https://hgj1999.github.io/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/06.%E6%B7%BB%E5%8A%A0%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/index.html">
 <meta property="og:site_name" content="点点星光的技术博客">
-<meta property="og:description" content="数据初始化Vue 实例化过程，Vue 为一个构造函数，传入的参数是一个对象，可称之为 options 。 123456new Vue(&amp;#123;  el: &quot;#app&quot;,  router,  store,  render: (h) &#x3D;&gt; h(App),&amp;#125;); 接下来就是初始化 Vue 工作 12345678910&#x2F;&#x2F; src&#x2F;index.jsimport &amp;#">
+<meta property="og:description" content="基于vitenuxt.confit.ts123456789101112import &amp;#123; loadEnv &amp;#125; from &amp;#x27;vite&amp;#x27;interface VITE_ENV_CONFIG &amp;#123;  VITE_PACK_URL: string&amp;#125;const envScript &#x3D; (process.env as any).npm_lifecycle_s">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-04-26T02:05:41.000Z">
-<meta property="article:modified_time" content="2023-04-26T06:05:01.251Z">
+<meta property="article:modified_time" content="2023-07-21T09:45:23.232Z">
 <meta property="article:author" content="Glimmering Stars">
-<meta property="article:tag" content="Vue2">
+<meta property="article:tag" content="Vue3">
+<meta property="article:tag" content="nuxt3">
+<meta property="article:tag" content="环境变量">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>observe - 点点星光的技术博客</title>
+  <title>添加环境变量 - 点点星光的技术博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +199,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="observe"></span>
+            <span id="subtitle" data-typed-text="添加环境变量"></span>
           
         </div>
 
@@ -220,7 +222,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          4.3k 字
+          761 字
         
       </span>
     
@@ -231,7 +233,7 @@
         
         
         
-          37 分钟
+          7 分钟
         
       </span>
     
@@ -620,17 +622,17 @@
     
     
     <div class="category-sub row nomargin-x">
-      <a class="category-subitem 
+      <a class="category-subitem collapsed
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Vue2"
         id="heading-b5bc4fae52caba546fa469b33a1f7efd" role="tab" data-toggle="collapse" href="#collapse-b5bc4fae52caba546fa469b33a1f7efd"
-        aria-expanded="true"
+        aria-expanded="false"
       >
         Vue2
         <span class="list-group-count">(8)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-b5bc4fae52caba546fa469b33a1f7efd"
+      <div class="category-collapse collapse " id="collapse-b5bc4fae52caba546fa469b33a1f7efd"
            role="tabpanel" aria-labelledby="heading-b5bc4fae52caba546fa469b33a1f7efd">
         
         
@@ -647,17 +649,17 @@
     
     
     <div class="category-sub row nomargin-x">
-      <a class="category-subitem 
+      <a class="category-subitem collapsed
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="原理"
         id="heading-b6724cffe9b1e39a5652a348831a4e0d" role="tab" data-toggle="collapse" href="#collapse-b6724cffe9b1e39a5652a348831a4e0d"
-        aria-expanded="true"
+        aria-expanded="false"
       >
         原理
         <span class="list-group-count">(6)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-b6724cffe9b1e39a5652a348831a4e0d"
+      <div class="category-collapse collapse " id="collapse-b6724cffe9b1e39a5652a348831a4e0d"
            role="tabpanel" aria-labelledby="heading-b6724cffe9b1e39a5652a348831a4e0d">
         
         
@@ -669,7 +671,7 @@
       
         <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/01.observe/" title="observe"
            class="list-group-item list-group-item-action
-           active">
+           ">
           <span class="category-post">observe</span>
         </a>
       
@@ -872,17 +874,17 @@
     
     
     <div class="category-sub row nomargin-x">
-      <a class="category-subitem collapsed
+      <a class="category-subitem 
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Vue3"
         id="heading-79dcf464d3e1b41635e194883d0c939a" role="tab" data-toggle="collapse" href="#collapse-79dcf464d3e1b41635e194883d0c939a"
-        aria-expanded="false"
+        aria-expanded="true"
       >
         Vue3
         <span class="list-group-count">(7)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse " id="collapse-79dcf464d3e1b41635e194883d0c939a"
+      <div class="category-collapse collapse show" id="collapse-79dcf464d3e1b41635e194883d0c939a"
            role="tabpanel" aria-labelledby="heading-79dcf464d3e1b41635e194883d0c939a">
         
         
@@ -936,17 +938,17 @@
     
     
     <div class="category-sub row nomargin-x">
-      <a class="category-subitem collapsed
+      <a class="category-subitem 
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="生态"
         id="heading-2bbb08c8b90b98a98ee6940d899b794d" role="tab" data-toggle="collapse" href="#collapse-2bbb08c8b90b98a98ee6940d899b794d"
-        aria-expanded="false"
+        aria-expanded="true"
       >
         生态
         <span class="list-group-count">(6)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse " id="collapse-2bbb08c8b90b98a98ee6940d899b794d"
+      <div class="category-collapse collapse show" id="collapse-2bbb08c8b90b98a98ee6940d899b794d"
            role="tabpanel" aria-labelledby="heading-2bbb08c8b90b98a98ee6940d899b794d">
         
         
@@ -963,17 +965,17 @@
     
     
     <div class="category-sub row nomargin-x">
-      <a class="category-subitem collapsed
+      <a class="category-subitem 
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="nuxt3"
         id="heading-fc69c1cad2d55a934383c957f4133484" role="tab" data-toggle="collapse" href="#collapse-fc69c1cad2d55a934383c957f4133484"
-        aria-expanded="false"
+        aria-expanded="true"
       >
         nuxt3
         <span class="list-group-count">(6)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse " id="collapse-fc69c1cad2d55a934383c957f4133484"
+      <div class="category-collapse collapse show" id="collapse-fc69c1cad2d55a934383c957f4133484"
            role="tabpanel" aria-labelledby="heading-fc69c1cad2d55a934383c957f4133484">
         
         
@@ -1030,7 +1032,7 @@
       
         <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/06.%E6%B7%BB%E5%8A%A0%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" title="添加环境变量"
            class="list-group-item list-group-item-action
-           ">
+           active">
           <span class="category-post">添加环境变量</span>
         </a>
       
@@ -1186,26 +1188,20 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">observe</h1>
+            <h1 style="display: none">添加环境变量</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="数据初始化"><a href="#数据初始化" class="headerlink" title="数据初始化"></a>数据初始化</h1><p><code>Vue</code> 实例化过程，<code>Vue</code> 为一个构造函数，传入的参数是一个对象，可称之为 <code>options</code> 。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">new</span> <span class="hljs-title class_">Vue</span>(&#123;<br>  <span class="hljs-attr">el</span>: <span class="hljs-string">&quot;#app&quot;</span>,<br>  router,<br>  store,<br>  <span class="hljs-attr">render</span>: <span class="hljs-function">(<span class="hljs-params">h</span>) =&gt;</span> <span class="hljs-title function_">h</span>(<span class="hljs-title class_">App</span>),<br>&#125;);<br></code></pre></td></tr></table></figure>
-<p>接下来就是初始化 Vue 工作</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// src/index.js</span><br><span class="hljs-keyword">import</span> &#123; initMixin &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;./init.js&quot;</span>;<br><span class="hljs-comment">// Vue 就是一个构造函数 通过 new 关键字 进行实例化</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">Vue</span>(<span class="hljs-params">options</span>) &#123;<br>  <span class="hljs-comment">// 进行 Vue 初始化工作</span><br>  <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">_init</span>(options);<br>&#125;<br><span class="hljs-comment">// _init 方法是挂载在Vue原型的方法 通过引入文件的方式进行原型挂载，需要传入 Vue 对象</span><br><span class="hljs-title function_">initMixin</span>(<span class="hljs-title class_">Vue</span>);<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-title class_">Vue</span>;<br></code></pre></td></tr></table></figure>
-<p>initMixin 把 _init 方法挂载在 Vue 原型 供 Vue 实例调用</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// src/state.js</span><br><span class="hljs-keyword">import</span> &#123; observe &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;./observer/index.js&quot;</span>;<br><span class="hljs-comment">// 初始化状态</span><br><span class="hljs-comment">// 初始化的顺序依次是 prop &gt; methods &gt; data &gt; watch</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">initState</span>(<span class="hljs-params">vm</span>) &#123;<br>  <span class="hljs-comment">// 获取传入的数据对象</span><br>  <span class="hljs-keyword">const</span> opts = vm.<span class="hljs-property">$options</span>;<br>  <span class="hljs-keyword">if</span> (opts.<span class="hljs-property">props</span>) &#123;<br>    <span class="hljs-title function_">initProps</span>(vm)  <br>  &#125;<br>  <span class="hljs-keyword">if</span> (opts.<span class="hljs-property">methods</span>) &#123;<br>    <span class="hljs-title function_">initMethod</span>(vm)<br>  &#125;<br>  <span class="hljs-keyword">if</span> (opts.<span class="hljs-property">data</span>) &#123;<br>    <span class="hljs-title function_">initData</span>(vm)<br>  &#125;<br>  <span class="hljs-keyword">if</span> (opts.<span class="hljs-property">computed</span>) &#123;<br>    <span class="hljs-title function_">initComputed</span>(vm);<br>  &#125;<br>  <span class="hljs-keyword">if</span> (opts.<span class="hljs-property">watch</span>) &#123;<br>    <span class="hljs-title function_">initWatch</span>(vm)<br>  &#125;<br>&#125;<br><span class="hljs-comment">// 初始化 data 数据</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">initData</span>(<span class="hljs-params">vm</span>) &#123;<br>  <span class="hljs-keyword">let</span> data = vm.<span class="hljs-property">$options</span>.<span class="hljs-property">data</span>;<br>  <span class="hljs-comment">// 实例的_data熟悉就是传入的data</span><br>  <span class="hljs-comment">// vue 组件的 data 之所以要使用函数，是为了私有化数据，js 只有函数作用域</span><br>  data = vm.<span class="hljs-property">_data</span> = <span class="hljs-keyword">typeof</span> data === <span class="hljs-string">&#x27;function&#x27;</span> ? data.<span class="hljs-title function_">call</span>(vm) : data || &#123;&#125;;<br>  <br>  <span class="hljs-comment">// 把 data 数据代理到 vm 也就是 Vue实例上面 我们可以使用this.a 来访问 this._data.a</span><br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> key <span class="hljs-keyword">in</span> data) &#123;<br>    <span class="hljs-title function_">proxy</span>(vm, <span class="hljs-string">`_data`</span>, key)<br>  &#125;<br>  <span class="hljs-comment">// 对数据进行观测 -- 响应式数据核心</span><br>  <span class="hljs-title function_">observe</span>(data);<br>&#125;<br><span class="hljs-comment">// 数据代理</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">proxy</span>(<span class="hljs-params">object, sourceKey, key</span>) &#123;<br>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(object, key, &#123;<br>    <span class="hljs-title function_">get</span>(<span class="hljs-params"></span>) &#123;<br>      <span class="hljs-keyword">return</span> object[sourceKey][key];<br>    &#125;,<br>    <span class="hljs-title function_">set</span>(<span class="hljs-params">newValue</span>) &#123;<br>      object[sourceKey][key] = newValue;<br>    &#125;,<br>  &#125;);<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h1 id="对象的数据劫持"><a href="#对象的数据劫持" class="headerlink" title="对象的数据劫持"></a>对象的数据劫持</h1><p>defineReactive 函数 主要使用<code>Object.defineProperty</code>来对数据 get 和 set 进行劫持 这里知道了为啥数据变动了会自动更新视图 -&gt; 可以在 set 里面去通知视图更新</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// src/obserber/index.js</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Observer</span> &#123;<br>  <br>  <span class="hljs-comment">// 观测值</span><br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">value</span>) &#123;<br>    <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">walk</span>(value);<br>  &#125;<br>  <span class="hljs-title function_">walk</span>(<span class="hljs-params">data</span>) &#123;<br>    <span class="hljs-comment">// 对象上所有的属性依次进行观测</span><br>    <span class="hljs-keyword">let</span> keys = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">keys</span>(data);<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; keys.<span class="hljs-property">length</span>; i++) &#123;<br>      <span class="hljs-keyword">let</span> key = keys[i];<br>      <span class="hljs-keyword">let</span> value = data[key];<br>      <span class="hljs-title function_">defineReactive</span>(data, key, value)<br>    &#125;<br>  &#125;<br>&#125;<br><span class="hljs-comment">// Object.defineProperty 数据劫持核心 兼容性在 ie9 及以上</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">defineReactive</span>(<span class="hljs-params">data, keym value</span>) &#123;<br>  <span class="hljs-title function_">observe</span>(value); <span class="hljs-comment">// 递归</span><br>  <span class="hljs-comment">// 如果 value 还是对象就递归，直到 value 不是对象为止</span><br>  <span class="hljs-comment">// 如果 Vue 数据嵌套层级过深 会有性能影响</span><br>  <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(data, key, &#123;<br>    <span class="hljs-title function_">get</span>(<span class="hljs-params"></span>) &#123;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;获取值&#x27;</span>);<br>      <span class="hljs-keyword">return</span> value;<br>    &#125;,<br>    <span class="hljs-title function_">set</span>(<span class="hljs-params">newValue</span>) &#123;<br>      <span class="hljs-keyword">if</span> (newValue === value) <span class="hljs-keyword">return</span>;<br>      <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;设置值&#x27;</span>);<br>      value = newValue;<br>    &#125;,<br>  &#125;);<br>&#125;<br><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">observe</span>(<span class="hljs-params">value</span>) &#123;<br>  <span class="hljs-comment">// 如果传过来的是对象或者数组，进行属性劫持</span><br>  <span class="hljs-keyword">if</span> (<br>    <span class="hljs-title class_">Object</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>.<span class="hljs-property">toString</span>.<span class="hljs-title function_">call</span>(value) === <span class="hljs-string">&#x27;[object Object]&#x27;</span> ||<br>    <span class="hljs-title class_">Array</span>.<span class="hljs-title function_">isArray</span>(value)<br>  ) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Observer</span>(value)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h1 id="数组的观测"><a href="#数组的观测" class="headerlink" title="数组的观测"></a>数组的观测</h1><p>数组元素过多，使用递归根据下标直接修改数据太消耗性能了，不可能为每个元素下标都添加 get 和 set 方法。<br />所以通过重写数组原型方法来对数组的七种方法进行拦截。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// src/obserber/index.js</span><br><span class="hljs-keyword">import</span> &#123; arrayMethods &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;./array&#x27;</span>;<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Observer</span> &#123;<br> <span class="hljs-title function_">constructor</span>(<span class="hljs-params">value</span>) &#123;<br>   <span class="hljs-keyword">if</span> (<span class="hljs-title class_">Array</span>.<span class="hljs-title function_">isArray</span>(value)) &#123;<br>     <span class="hljs-comment">// 通过重写数组原型方法来对数组的七种方法进行拦截</span><br>     value.<span class="hljs-property">__proto__</span> = arrayMethods;<br>     <span class="hljs-comment">// 如果数组里面还包含数组 需要递归判断</span><br>     <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">observeArray</span>(value);<br>   &#125; <span class="hljs-keyword">else</span> &#123;<br>     <span class="hljs-variable language_">this</span>.<span class="hljs-title function_">walk</span>(value);<br>   &#125;<br> &#125;<br>  <span class="hljs-title function_">observeArray</span>(<span class="hljs-params">items</span>) &#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; items.<span class="hljs-property">length</span>; i++) &#123;<br>      <span class="hljs-title function_">observe</span>(items[i])  <br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>下面这段代码给每个响应式数据增加了一个不可枚举的__ob__属性 并且指向了 Observer 实例 那么我们首先可以根据这个属性来防止已经被响应式观察的数据反复被观测 其次 响应式数据可以使用__ob__来获取 Observer 实例的相关方法 这对数组很关键</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// src/obserber/index.js</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Observer</span> &#123;<br>  <span class="hljs-comment">// 观测值</span><br>  <span class="hljs-title function_">constructor</span>(<span class="hljs-params">value</span>) &#123;<br>    <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">defineProperty</span>(value, <span class="hljs-string">&#x27;__ob__&#x27;</span>, &#123;<br>      <span class="hljs-comment">// 值指 Observer 的实例</span><br>      <span class="hljs-attr">value</span>: <span class="hljs-variable language_">this</span>,<br>      <span class="hljs-comment">// 不可枚举</span><br>      <span class="hljs-attr">enumerable</span>: <span class="hljs-literal">false</span>,<br>      <span class="hljs-attr">writable</span>: <span class="hljs-literal">true</span>,<br>      <span class="hljs-attr">configurable</span>: <span class="hljs-literal">true</span>,<br>    &#125;);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// src/obserber/array.js</span><br><span class="hljs-comment">// 先保留数据原型</span><br><span class="hljs-keyword">const</span> arrayProto = <span class="hljs-title class_">Array</span>.<span class="hljs-property"><span class="hljs-keyword">prototype</span></span>;<br><span class="hljs-comment">// 然后将 arrayMethods 继承自数组原型</span><br><span class="hljs-comment">// 这里是面向切片编程思想（AOP）：不破坏封装的前提下，动态扩展功能</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> arrayMethods = <span class="hljs-title class_">Object</span>.<span class="hljs-title function_">create</span>(arrayProto);<br><span class="hljs-keyword">let</span> methodsToPath = [<br>  <span class="hljs-string">&quot;push&quot;</span>,<br>  <span class="hljs-string">&quot;pop&quot;</span>,<br>  <span class="hljs-string">&quot;shift&quot;</span>,<br>  <span class="hljs-string">&quot;unshift&quot;</span>,<br>  <span class="hljs-string">&quot;splice&quot;</span>,<br>  <span class="hljs-string">&quot;reverse&quot;</span>,<br>  <span class="hljs-string">&quot;sort&quot;</span>,<br>];<br>methodsToPath.<span class="hljs-title function_">forEach</span>(<span class="hljs-function">(<span class="hljs-params">method</span>) =&gt;</span> &#123;<br>  arrayMethods[method] = <span class="hljs-keyword">function</span> (<span class="hljs-params">...args</span>) &#123;<br>    <span class="hljs-comment">// 这里保留原型方法的执行结果</span><br>    <span class="hljs-keyword">const</span> result = arrayProto[method].<span class="hljs-title function_">apply</span>(<span class="hljs-variable language_">this</span>, args);<br>    <span class="hljs-comment">// this代表的就是数据本身 比如数据是&#123;a:[1,2,3]&#125; 那么我们使用a.push(4)  this就是a  ob就是a.__ob__ 这个属性就是上段代码增加的 代表的是该数据已经被响应式观察过了指向Observer实例</span><br>    <span class="hljs-keyword">const</span> ob = <span class="hljs-variable language_">this</span>.<span class="hljs-property">__ob__</span>;<br>    <span class="hljs-comment">// 这里的标志就是代表数组有新增操作</span><br>    <span class="hljs-keyword">let</span> inserted;<br>    <span class="hljs-keyword">switch</span> (method) &#123;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">&#x27;push&#x27;</span>:<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;unshift&quot;</span>:<br>        inserted = args;<br>        <span class="hljs-keyword">break</span>;<br>      <span class="hljs-keyword">case</span> <span class="hljs-string">&quot;splice&quot;</span>:<br>        inserted = args.<span class="hljs-title function_">slice</span>(<span class="hljs-number">2</span>);<br>      <span class="hljs-attr">default</span>:<br>        <span class="hljs-keyword">break</span>;<br>    &#125;<br>    <span class="hljs-comment">// 如果有新增的元素 inserted是一个数组 调用Observer实例的observeArray对数组每一项进行观测</span><br>    <span class="hljs-keyword">if</span> (inserted) ob.<span class="hljs-title function_">observeArray</span>(inserted);<br>    <span class="hljs-comment">// 在这里就可以检测到数据变化了</span><br>    <span class="hljs-keyword">return</span> result;<br>  &#125;;<br>&#125;);<br></code></pre></td></tr></table></figure>
+                <h1 id="基于vite"><a href="#基于vite" class="headerlink" title="基于vite"></a>基于vite</h1><h2 id="nuxt-confit-ts"><a href="#nuxt-confit-ts" class="headerlink" title="nuxt.confit.ts"></a>nuxt.confit.ts</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> &#123; loadEnv &#125; <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;vite&#x27;</span><br>interface <span class="hljs-variable constant_">VITE_ENV_CONFIG</span> &#123;<br>  <span class="hljs-attr">VITE_PACK_URL</span>: string<br>&#125;<br><span class="hljs-keyword">const</span> envScript = (process.<span class="hljs-property">env</span> <span class="hljs-keyword">as</span> any).<span class="hljs-property">npm_lifecycle_script</span>.<span class="hljs-title function_">split</span>(<span class="hljs-string">&#x27; &#x27;</span>)<br><span class="hljs-keyword">const</span> envName = envScript[envScript.<span class="hljs-property">length</span> - <span class="hljs-number">1</span>]<br><span class="hljs-keyword">const</span> envData = <span class="hljs-title function_">loadEnv</span>(envName, <span class="hljs-string">&#x27;env&#x27;</span>) <span class="hljs-keyword">as</span> unknown <span class="hljs-keyword">as</span> <span class="hljs-variable constant_">VITE_ENV_CONFIG</span><br><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> &#123;<br>  <span class="hljs-attr">vite</span>: &#123;<br>    <span class="hljs-attr">envDir</span>: <span class="hljs-string">&#x27;~/env&#x27;</span>,<br>  &#125;,<br>&#125;<br></code></pre></td></tr></table></figure>
+<h2 id="根目录下的env文件夹"><a href="#根目录下的env文件夹" class="headerlink" title="根目录下的env文件夹"></a>根目录下的env文件夹</h2><p>分别新建<code>.env.dev``.env.production``.env.test</code> 分别对应开发环境、生产环境、测试环境<br>文件中可以输入需要的环境变量，例如apipreffix<br><code>.env.dev</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable constant_">APIPREFFIX</span> = <span class="hljs-string">&#x27;&#x27;</span><br></code></pre></td></tr></table></figure>
+<p><code>.env.production</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable constant_">APIPREFFIX</span> = <span class="hljs-string">&#x27;www.production.com&#x27;</span><br></code></pre></td></tr></table></figure>
+<p><code>.env.test</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-variable constant_">APIPREFFIX</span> = <span class="hljs-string">&#x27;www.test.com&#x27;</span><br></code></pre></td></tr></table></figure>
+<h2 id="读取环境变量"><a href="#读取环境变量" class="headerlink" title="读取环境变量"></a>读取环境变量</h2><p>通过 <code>useRuntimeConfig()</code>API读取<br>例：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> <span class="hljs-title function_">getBaseUrl</span> = (<span class="hljs-params"></span>) =&gt; &#123;<br>  <span class="hljs-keyword">const</span> &#123; <span class="hljs-variable constant_">APIPREFFIX</span> &#125; = <span class="hljs-title function_">useRuntimeConfig</span>()<br>  <span class="hljs-keyword">return</span> <span class="hljs-variable constant_">APIPREFFIX</span><br>&#125;<br></code></pre></td></tr></table></figure>
 
                 
               </div>
@@ -1229,13 +1225,20 @@
   
     <span>></span>
     
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue2/" class="category-chain-item">Vue2</a>
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue3/" class="category-chain-item">Vue3</a>
   
   
     <span>></span>
     
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/" class="category-chain-item">原理</a>
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/" class="category-chain-item">生态</a>
   
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/" class="category-chain-item">nuxt3</a>
+  
+  
+
   
 
   
@@ -1253,7 +1256,11 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/Vue2/">#Vue2</a>
+        <a href="/tags/Vue3/">#Vue3</a>
+      
+        <a href="/tags/nuxt3/">#nuxt3</a>
+      
+        <a href="/tags/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/">#环境变量</a>
       
     </div>
   
@@ -1265,8 +1272,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>observe</div>
-      <div>https://hgj1999.github.io/2023/04/26/web前端/Vue2/原理/01.observe/</div>
+      <div>添加环境变量</div>
+      <div>https://hgj1999.github.io/2023/04/26/web前端/Vue3/生态/nuxt3/06.添加环境变量/</div>
     </div>
     <div class="license-meta">
       
@@ -1310,9 +1317,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/04/26/%E7%BD%91%E7%BB%9C/01.HTTP/" title="HTTP">
+                      <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/05.cdn%E6%96%B9%E6%A1%88/" title="cdn 方案">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">HTTP</span>
+                        <span class="hidden-mobile">cdn 方案</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -1320,8 +1327,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E5%8E%9F%E7%90%86/observe/" title="observe">
-                        <span class="hidden-mobile">observe</span>
+                      <a href="/2023/04/21/web%E5%89%8D%E7%AB%AF/TypeScript/%E5%9F%BA%E7%A1%80/" title="基础">
+                        <span class="hidden-mobile">基础</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
