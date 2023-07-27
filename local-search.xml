@@ -508,9 +508,9 @@
     
     <tags>
       
-      <tag>Vue2</tag>
+      <tag>浏览器</tag>
       
-      <tag>vxe-table</tag>
+      <tag>js</tag>
       
     </tags>
     
@@ -625,6 +625,37 @@
     <tags>
       
       <tag>微信小程序</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>浏览器与js</title>
+    <link href="/2023/04/26/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/02.%E6%BB%9A%E5%8A%A8%E6%9D%A1/"/>
+    <url>/2023/04/26/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/02.%E6%BB%9A%E5%8A%A8%E6%9D%A1/</url>
+    
+    <content type="html"><![CDATA[<h1 id="滚动条"><a href="#滚动条" class="headerlink" title="滚动条"></a>滚动条</h1><h2 id="两种表现形式"><a href="#两种表现形式" class="headerlink" title="两种表现形式"></a>两种表现形式</h2><ol><li>占据页面内容</li><li>悬浮在页面上，不占据页面内容</li></ol><h2 id="兼容方案"><a href="#兼容方案" class="headerlink" title="兼容方案"></a>兼容方案</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> &#123;<span class="hljs-type">dom</span>&#125; el 滚动条容器dom元素</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> &#123;<span class="hljs-type">boolean</span>&#125; 是否出现占据内容宽度的滚动条</span><br><span class="hljs-comment"> */</span><br><span class="hljs-title function_">isScrollOccupyingWidth</span>(<span class="hljs-params">el</span>) &#123;<br>  <span class="hljs-keyword">if</span> (!el) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>  <span class="hljs-comment">// 获取元素的实际高度和可见高度</span><br>  <span class="hljs-keyword">const</span> scrollHeight = el.<span class="hljs-property">scrollHeight</span><br>  <span class="hljs-keyword">const</span> clientHeight = el.<span class="hljs-property">clientHeight</span><br><br>  <span class="hljs-comment">// 获取元素的实际宽度和可见宽度 </span><br>  <span class="hljs-keyword">const</span> offsetWidth = el.<span class="hljs-property">offsetWidth</span><br>  <span class="hljs-keyword">const</span> clientWidth = el.<span class="hljs-property">clientWidth</span><br><br>  <span class="hljs-comment">// 判断是否出现滚动条并且滚动条是占据内容宽度的</span><br>  <span class="hljs-keyword">return</span> scrollHeight &gt; clientHeight &amp;&amp; offsetWidth &gt; clientWidth<br>&#125;<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>web前端</category>
+      
+      <category>浏览器</category>
+      
+      <category>滚动条</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>浏览器</tag>
+      
+      <tag>滚动条</tag>
       
     </tags>
     
