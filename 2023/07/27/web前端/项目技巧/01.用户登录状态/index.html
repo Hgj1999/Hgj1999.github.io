@@ -16,23 +16,22 @@
   <meta name="author" content="Glimmering Stars">
   <meta name="keywords" content="技术博客">
   
-    <meta name="description" content="滚动条两种表现形式 占据页面内容 悬浮在页面上，不占据页面内容  兼容方案1234567891011121314151617&#x2F;** * @param &amp;#123;dom&amp;#125; el 滚动条容器dom元素 * @returns &amp;#123;boolean&amp;#125; 是否出现占据内容宽度的滚动条 *&#x2F;isScrollOccupyingWidth(el) &amp;#123;  if (!el) ret">
+    <meta name="description" content="登录状态痛点活跃用户不能频繁失去登录状态，并且要保证 token 的安全性 解决方案双token机制：  accessToken真正用来获取数据的token refreshToken用来获取accessToken  实现方式 在响应拦截器中拦截，后端判断token过期，返回固定的状态码，前端调用续签token的接口123456789101112131415import axios from &amp;#x">
 <meta property="og:type" content="article">
-<meta property="og:title" content="浏览器与js">
-<meta property="og:url" content="https://hgj1999.github.io/2023/04/26/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/02.%E6%BB%9A%E5%8A%A8%E6%9D%A1/index.html">
+<meta property="og:title" content="用户登录状态">
+<meta property="og:url" content="https://hgj1999.github.io/2023/07/27/web%E5%89%8D%E7%AB%AF/%E9%A1%B9%E7%9B%AE%E6%8A%80%E5%B7%A7/01.%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81/index.html">
 <meta property="og:site_name" content="点点星光的技术博客">
-<meta property="og:description" content="滚动条两种表现形式 占据页面内容 悬浮在页面上，不占据页面内容  兼容方案1234567891011121314151617&#x2F;** * @param &amp;#123;dom&amp;#125; el 滚动条容器dom元素 * @returns &amp;#123;boolean&amp;#125; 是否出现占据内容宽度的滚动条 *&#x2F;isScrollOccupyingWidth(el) &amp;#123;  if (!el) ret">
+<meta property="og:description" content="登录状态痛点活跃用户不能频繁失去登录状态，并且要保证 token 的安全性 解决方案双token机制：  accessToken真正用来获取数据的token refreshToken用来获取accessToken  实现方式 在响应拦截器中拦截，后端判断token过期，返回固定的状态码，前端调用续签token的接口123456789101112131415import axios from &amp;#x">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-04-26T05:56:15.000Z">
-<meta property="article:modified_time" content="2023-07-27T06:01:33.796Z">
+<meta property="article:published_time" content="2023-07-27T06:56:15.000Z">
+<meta property="article:modified_time" content="2023-07-27T06:13:53.354Z">
 <meta property="article:author" content="Glimmering Stars">
-<meta property="article:tag" content="浏览器">
-<meta property="article:tag" content="滚动条">
+<meta property="article:tag" content="项目技巧">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>浏览器与js - 点点星光的技术博客</title>
+  <title>用户登录状态 - 点点星光的技术博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -198,7 +197,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="浏览器与js"></span>
+            <span id="subtitle" data-typed-text="用户登录状态"></span>
           
         </div>
 
@@ -209,8 +208,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-04-26 13:56" pubdate>
-          2023年4月26日 下午
+        <time datetime="2023-07-27 14:56" pubdate>
+          2023年7月27日 下午
         </time>
       </span>
     
@@ -221,7 +220,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          450 字
+          499 字
         
       </span>
     
@@ -232,7 +231,7 @@
         
         
         
-          4 分钟
+          5 分钟
         
       </span>
     
@@ -282,7 +281,7 @@
         aria-expanded="true"
       >
         web前端
-        <span class="list-group-count">(36)</span>
+        <span class="list-group-count">(37)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
@@ -1137,17 +1136,17 @@
     
     
     <div class="category-sub row nomargin-x">
-      <a class="category-subitem 
+      <a class="category-subitem collapsed
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="浏览器"
         id="heading-912302cb020149c37f9642fbc9e42891" role="tab" data-toggle="collapse" href="#collapse-912302cb020149c37f9642fbc9e42891"
-        aria-expanded="true"
+        aria-expanded="false"
       >
         浏览器
         <span class="list-group-count">(2)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-912302cb020149c37f9642fbc9e42891"
+      <div class="category-collapse collapse " id="collapse-912302cb020149c37f9642fbc9e42891"
            role="tabpanel" aria-labelledby="heading-912302cb020149c37f9642fbc9e42891">
         
         
@@ -1173,17 +1172,17 @@
     
     
     <div class="category-sub row nomargin-x">
-      <a class="category-subitem 
+      <a class="category-subitem collapsed
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="滚动条"
         id="heading-47f0022e8e7a23f5a332273686eef9a7" role="tab" data-toggle="collapse" href="#collapse-47f0022e8e7a23f5a332273686eef9a7"
-        aria-expanded="true"
+        aria-expanded="false"
       >
         滚动条
         <span class="list-group-count">(1)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-47f0022e8e7a23f5a332273686eef9a7"
+      <div class="category-collapse collapse " id="collapse-47f0022e8e7a23f5a332273686eef9a7"
            role="tabpanel" aria-labelledby="heading-47f0022e8e7a23f5a332273686eef9a7">
         
         
@@ -1193,10 +1192,78 @@
     
       
       
-        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/02.%E6%BB%9A%E5%8A%A8%E6%9D%A1/" title="浏览器与js"
+        <a href="/2023/07/27/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/02.%E6%BB%9A%E5%8A%A8%E6%9D%A1/" title="滚动条"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">滚动条</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="项目技巧"
+        id="heading-ec50b9dea63b6fd38b433e14854cc36a" role="tab" data-toggle="collapse" href="#collapse-ec50b9dea63b6fd38b433e14854cc36a"
+        aria-expanded="true"
+      >
+        项目技巧
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-ec50b9dea63b6fd38b433e14854cc36a"
+           role="tabpanel" aria-labelledby="heading-ec50b9dea63b6fd38b433e14854cc36a">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="用户登录状态"
+        id="heading-f8674457fa9cdaf3d5dabc71e9377947" role="tab" data-toggle="collapse" href="#collapse-f8674457fa9cdaf3d5dabc71e9377947"
+        aria-expanded="true"
+      >
+        用户登录状态
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-f8674457fa9cdaf3d5dabc71e9377947"
+           role="tabpanel" aria-labelledby="heading-f8674457fa9cdaf3d5dabc71e9377947">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/27/web%E5%89%8D%E7%AB%AF/%E9%A1%B9%E7%9B%AE%E6%8A%80%E5%B7%A7/01.%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81/" title="用户登录状态"
            class="list-group-item list-group-item-action
            active">
-          <span class="category-post">浏览器与js</span>
+          <span class="category-post">用户登录状态</span>
         </a>
       
     
@@ -1227,16 +1294,21 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">浏览器与js</h1>
+            <h1 style="display: none">用户登录状态</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="滚动条"><a href="#滚动条" class="headerlink" title="滚动条"></a>滚动条</h1><h2 id="两种表现形式"><a href="#两种表现形式" class="headerlink" title="两种表现形式"></a>两种表现形式</h2><ol>
-<li>占据页面内容</li>
-<li>悬浮在页面上，不占据页面内容</li>
+                <h1 id="登录状态"><a href="#登录状态" class="headerlink" title="登录状态"></a>登录状态</h1><h2 id="痛点"><a href="#痛点" class="headerlink" title="痛点"></a>痛点</h2><p>活跃用户不能频繁失去登录状态，并且要保证 <code>token</code> 的安全性</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>双<code>token</code>机制：</p>
+<ol>
+<li><code>accessToken</code>真正用来获取数据的<code>token</code></li>
+<li><code>refreshToken</code>用来获取<code>accessToken</code></li>
 </ol>
-<h2 id="兼容方案"><a href="#兼容方案" class="headerlink" title="兼容方案"></a>兼容方案</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> &#123;<span class="hljs-type">dom</span>&#125; el 滚动条容器dom元素</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> &#123;<span class="hljs-type">boolean</span>&#125; 是否出现占据内容宽度的滚动条</span><br><span class="hljs-comment"> */</span><br><span class="hljs-title function_">isScrollOccupyingWidth</span>(<span class="hljs-params">el</span>) &#123;<br>  <span class="hljs-keyword">if</span> (!el) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>  <span class="hljs-comment">// 获取元素的实际高度和可见高度</span><br>  <span class="hljs-keyword">const</span> scrollHeight = el.<span class="hljs-property">scrollHeight</span><br>  <span class="hljs-keyword">const</span> clientHeight = el.<span class="hljs-property">clientHeight</span><br><br>  <span class="hljs-comment">// 获取元素的实际宽度和可见宽度 </span><br>  <span class="hljs-keyword">const</span> offsetWidth = el.<span class="hljs-property">offsetWidth</span><br>  <span class="hljs-keyword">const</span> clientWidth = el.<span class="hljs-property">clientWidth</span><br><br>  <span class="hljs-comment">// 判断是否出现滚动条并且滚动条是占据内容宽度的</span><br>  <span class="hljs-keyword">return</span> scrollHeight &gt; clientHeight &amp;&amp; offsetWidth &gt; clientWidth<br>&#125;<br></code></pre></td></tr></table></figure>
+<h3 id="实现方式"><a href="#实现方式" class="headerlink" title="实现方式"></a>实现方式</h3><ol>
+<li>在响应拦截器中拦截，后端判断<code>token</code>过期，返回固定的状态码，前端调用续签<code>token</code>的接口<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;axios&#x27;</span>;<br>axios.<span class="hljs-property">interceptors</span>.<span class="hljs-property">response</span>.<span class="hljs-title function_">use</span>(<span class="hljs-function"><span class="hljs-params">res</span> =&gt;</span> &#123;<br>  <span class="hljs-comment">// token异常</span><br>  <span class="hljs-keyword">if</span> (res.<span class="hljs-property">data</span>.<span class="hljs-property">code</span> === <span class="hljs-number">409</span>) &#123;<br>    <span class="hljs-title function_">deleteToken</span>();<br>    router.<span class="hljs-title function_">push</span>(<span class="hljs-string">&#x27;/login&#x27;</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-title class_">Promise</span>.<span class="hljs-title function_">reject</span>();<br>    <span class="hljs-comment">// 更新Token</span><br>  &#125; <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (res.<span class="hljs-property">data</span>.<span class="hljs-property">code</span> === <span class="hljs-number">410</span>) &#123;<br>    <span class="hljs-keyword">const</span> &#123;token&#125; = res.<span class="hljs-property">data</span><br>    <span class="hljs-title function_">setToken</span>(token);<span class="hljs-comment">// 重置token</span><br>  &#125;<br>  <span class="hljs-keyword">return</span> res &amp;&amp; res.<span class="hljs-property">data</span><br>&#125;)<br><br></code></pre></td></tr></table></figure></li>
+</ol>
+
                 
               </div>
             
@@ -1259,12 +1331,12 @@
   
     <span>></span>
     
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/" class="category-chain-item">浏览器</a>
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/%E9%A1%B9%E7%9B%AE%E6%8A%80%E5%B7%A7/" class="category-chain-item">项目技巧</a>
   
   
     <span>></span>
     
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/%E6%BB%9A%E5%8A%A8%E6%9D%A1/" class="category-chain-item">滚动条</a>
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/%E9%A1%B9%E7%9B%AE%E6%8A%80%E5%B7%A7/%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81/" class="category-chain-item">用户登录状态</a>
   
   
 
@@ -1283,9 +1355,7 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/">#浏览器</a>
-      
-        <a href="/tags/%E6%BB%9A%E5%8A%A8%E6%9D%A1/">#滚动条</a>
+        <a href="/tags/%E9%A1%B9%E7%9B%AE%E6%8A%80%E5%B7%A7/">#项目技巧</a>
       
     </div>
   
@@ -1297,8 +1367,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>浏览器与js</div>
-      <div>https://hgj1999.github.io/2023/04/26/web前端/浏览器/02.滚动条/</div>
+      <div>用户登录状态</div>
+      <div>https://hgj1999.github.io/2023/07/27/web前端/项目技巧/01.用户登录状态/</div>
     </div>
     <div class="license-meta">
       
@@ -1310,7 +1380,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年4月26日</div>
+          <div>2023年7月27日</div>
         </div>
       
       
@@ -1342,18 +1412,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E8%B8%A9%E5%9D%91/" title="踩坑">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">踩坑</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/02.template/" title="template">
-                        <span class="hidden-mobile">template</span>
+                      <a href="/2023/07/27/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/02.%E6%BB%9A%E5%8A%A8%E6%9D%A1/" title="滚动条">
+                        <span class="hidden-mobile">滚动条</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

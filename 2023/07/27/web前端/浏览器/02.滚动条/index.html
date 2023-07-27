@@ -16,22 +16,23 @@
   <meta name="author" content="Glimmering Stars">
   <meta name="keywords" content="技术博客">
   
-    <meta name="description" content="原生组件cover-view123456&#x2F;*  需要添加换行 *&#x2F;&amp;#123;  word-break: break-all;  word-wrap: break-word;  white-space: pre-line;&amp;#125; 不添加有文字重叠或者字符被遮挡一部分的bug textarea不设置 max-length 默认限制140个字符输入 dom元素dom元素获取只能获取当前组件或当前">
+    <meta name="description" content="滚动条两种表现形式 占据页面内容 悬浮在页面上，不占据页面内容  兼容方案1234567891011121314151617&#x2F;** * @param &amp;#123;dom&amp;#125; el 滚动条容器dom元素 * @returns &amp;#123;boolean&amp;#125; 是否出现占据内容宽度的滚动条 *&#x2F;isScrollOccupyingWidth(el) &amp;#123;  if (!el) ret">
 <meta property="og:type" content="article">
-<meta property="og:title" content="踩坑">
-<meta property="og:url" content="https://hgj1999.github.io/2023/04/26/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E8%B8%A9%E5%9D%91/index.html">
+<meta property="og:title" content="滚动条">
+<meta property="og:url" content="https://hgj1999.github.io/2023/07/27/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/02.%E6%BB%9A%E5%8A%A8%E6%9D%A1/index.html">
 <meta property="og:site_name" content="点点星光的技术博客">
-<meta property="og:description" content="原生组件cover-view123456&#x2F;*  需要添加换行 *&#x2F;&amp;#123;  word-break: break-all;  word-wrap: break-word;  white-space: pre-line;&amp;#125; 不添加有文字重叠或者字符被遮挡一部分的bug textarea不设置 max-length 默认限制140个字符输入 dom元素dom元素获取只能获取当前组件或当前">
+<meta property="og:description" content="滚动条两种表现形式 占据页面内容 悬浮在页面上，不占据页面内容  兼容方案1234567891011121314151617&#x2F;** * @param &amp;#123;dom&amp;#125; el 滚动条容器dom元素 * @returns &amp;#123;boolean&amp;#125; 是否出现占据内容宽度的滚动条 *&#x2F;isScrollOccupyingWidth(el) &amp;#123;  if (!el) ret">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-04-26T05:56:15.000Z">
-<meta property="article:modified_time" content="2023-07-18T06:28:29.745Z">
+<meta property="article:published_time" content="2023-07-27T05:56:15.000Z">
+<meta property="article:modified_time" content="2023-07-27T06:14:00.678Z">
 <meta property="article:author" content="Glimmering Stars">
-<meta property="article:tag" content="微信小程序">
+<meta property="article:tag" content="浏览器">
+<meta property="article:tag" content="滚动条">
 <meta name="twitter:card" content="summary_large_image">
   
   
   
-  <title>踩坑 - 点点星光的技术博客</title>
+  <title>滚动条 - 点点星光的技术博客</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +198,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="踩坑"></span>
+            <span id="subtitle" data-typed-text="滚动条"></span>
           
         </div>
 
@@ -208,8 +209,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-04-26 13:56" pubdate>
-          2023年4月26日 下午
+        <time datetime="2023-07-27 13:56" pubdate>
+          2023年7月27日 下午
         </time>
       </span>
     
@@ -220,7 +221,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          624 字
+          450 字
         
       </span>
     
@@ -231,7 +232,7 @@
         
         
         
-          6 分钟
+          4 分钟
         
       </span>
     
@@ -1090,17 +1091,17 @@
     
     
     <div class="category-sub row nomargin-x">
-      <a class="category-subitem 
+      <a class="category-subitem collapsed
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="微信小程序"
         id="heading-439845b85c0a405cebc2e738b0786f15" role="tab" data-toggle="collapse" href="#collapse-439845b85c0a405cebc2e738b0786f15"
-        aria-expanded="true"
+        aria-expanded="false"
       >
         微信小程序
         <span class="list-group-count">(2)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse show" id="collapse-439845b85c0a405cebc2e738b0786f15"
+      <div class="category-collapse collapse " id="collapse-439845b85c0a405cebc2e738b0786f15"
            role="tabpanel" aria-labelledby="heading-439845b85c0a405cebc2e738b0786f15">
         
         
@@ -1112,7 +1113,7 @@
       
         <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E8%B8%A9%E5%9D%91/" title="踩坑"
            class="list-group-item list-group-item-action
-           active">
+           ">
           <span class="category-post">踩坑</span>
         </a>
       
@@ -1136,17 +1137,17 @@
     
     
     <div class="category-sub row nomargin-x">
-      <a class="category-subitem collapsed
+      <a class="category-subitem 
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="浏览器"
         id="heading-912302cb020149c37f9642fbc9e42891" role="tab" data-toggle="collapse" href="#collapse-912302cb020149c37f9642fbc9e42891"
-        aria-expanded="false"
+        aria-expanded="true"
       >
         浏览器
         <span class="list-group-count">(2)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse " id="collapse-912302cb020149c37f9642fbc9e42891"
+      <div class="category-collapse collapse show" id="collapse-912302cb020149c37f9642fbc9e42891"
            role="tabpanel" aria-labelledby="heading-912302cb020149c37f9642fbc9e42891">
         
         
@@ -1172,17 +1173,17 @@
     
     
     <div class="category-sub row nomargin-x">
-      <a class="category-subitem collapsed
+      <a class="category-subitem 
           list-group-item category-item-action col-10 col-md-11 col-xm-11" title="滚动条"
         id="heading-47f0022e8e7a23f5a332273686eef9a7" role="tab" data-toggle="collapse" href="#collapse-47f0022e8e7a23f5a332273686eef9a7"
-        aria-expanded="false"
+        aria-expanded="true"
       >
         滚动条
         <span class="list-group-count">(1)</span>
         <i class="iconfont icon-arrowright"></i>
       </a>
       
-      <div class="category-collapse collapse " id="collapse-47f0022e8e7a23f5a332273686eef9a7"
+      <div class="category-collapse collapse show" id="collapse-47f0022e8e7a23f5a332273686eef9a7"
            role="tabpanel" aria-labelledby="heading-47f0022e8e7a23f5a332273686eef9a7">
         
         
@@ -1194,7 +1195,7 @@
       
         <a href="/2023/07/27/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/02.%E6%BB%9A%E5%8A%A8%E6%9D%A1/" title="滚动条"
            class="list-group-item list-group-item-action
-           ">
+           active">
           <span class="category-post">滚动条</span>
         </a>
       
@@ -1294,16 +1295,16 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">踩坑</h1>
+            <h1 style="display: none">滚动条</h1>
             
             
               <div class="markdown-body">
                 
-                <h1 id="原生组件"><a href="#原生组件" class="headerlink" title="原生组件"></a>原生组件</h1><h2 id="cover-view"><a href="#cover-view" class="headerlink" title="cover-view"></a>cover-view</h2><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs css"><span class="hljs-comment">/*  需要添加换行 */</span><br>&#123;<br>  <span class="hljs-attribute">word-break</span>: break-all;<br>  <span class="hljs-attribute">word-wrap</span>: break-word;<br>  <span class="hljs-attribute">white-space</span>: pre-line;<br>&#125;<br></code></pre></td></tr></table></figure>
-<p>不添加有文字重叠或者字符被遮挡一部分的bug</p>
-<h2 id="textarea"><a href="#textarea" class="headerlink" title="textarea"></a>textarea</h2><p>不设置 <code>max-length</code> 默认限制140个字符输入</p>
-<h1 id="dom元素"><a href="#dom元素" class="headerlink" title="dom元素"></a>dom元素</h1><h2 id="dom元素获取"><a href="#dom元素获取" class="headerlink" title="dom元素获取"></a>dom元素获取</h2><p>只能获取当前组件或当前页面的dom元素，无法像H5中的<code>document.querySelect()</code>获取整个文档的dom元素<br>滚动demo</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript">uni.<span class="hljs-title function_">createSelectorQuery</span>().<span class="hljs-title function_">select</span>(<span class="hljs-string">&quot;.fater&quot;</span>).<span class="hljs-title function_">boundingClientRect</span>(<span class="hljs-function"><span class="hljs-params">data</span>=&gt;</span>&#123;<span class="hljs-comment">//目标节点、也可以是最外层的父级节点</span><br>  uni.<span class="hljs-title function_">createSelectorQuery</span>().<span class="hljs-title function_">select</span>(<span class="hljs-string">&quot;.child&quot;</span>).<span class="hljs-title function_">boundingClientRect</span>(<span class="hljs-function">(<span class="hljs-params">res</span>)=&gt;</span>&#123;<span class="hljs-comment">//最外层盒子节点</span><br>  <span class="hljs-keyword">if</span>(!res) <span class="hljs-keyword">return</span><br>  uni.<span class="hljs-title function_">pageScrollTo</span>(&#123;<br>  <span class="hljs-attr">duration</span>:<span class="hljs-number">0</span>,<span class="hljs-comment">//过渡时间必须为0，uniapp bug，否则运行到手机会报错</span><br>  <span class="hljs-attr">scrollTop</span>:res.<span class="hljs-property">top</span> - data.<span class="hljs-property">top</span>,<span class="hljs-comment">//滚动到实际距离是元素距离顶部的距离减去最外层盒子的滚动距离</span><br>  &#125;)<br>  &#125;).<span class="hljs-title function_">exec</span>()<br>&#125;).<span class="hljs-title function_">exec</span>();<br></code></pre></td></tr></table></figure>
+                <h1 id="滚动条"><a href="#滚动条" class="headerlink" title="滚动条"></a>滚动条</h1><h2 id="两种表现形式"><a href="#两种表现形式" class="headerlink" title="两种表现形式"></a>两种表现形式</h2><ol>
+<li>占据页面内容</li>
+<li>悬浮在页面上，不占据页面内容</li>
+</ol>
+<h2 id="兼容方案"><a href="#兼容方案" class="headerlink" title="兼容方案"></a>兼容方案</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> &#123;<span class="hljs-type">dom</span>&#125; el 滚动条容器dom元素</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> &#123;<span class="hljs-type">boolean</span>&#125; 是否出现占据内容宽度的滚动条</span><br><span class="hljs-comment"> */</span><br><span class="hljs-title function_">isScrollOccupyingWidth</span>(<span class="hljs-params">el</span>) &#123;<br>  <span class="hljs-keyword">if</span> (!el) <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>  <span class="hljs-comment">// 获取元素的实际高度和可见高度</span><br>  <span class="hljs-keyword">const</span> scrollHeight = el.<span class="hljs-property">scrollHeight</span><br>  <span class="hljs-keyword">const</span> clientHeight = el.<span class="hljs-property">clientHeight</span><br><br>  <span class="hljs-comment">// 获取元素的实际宽度和可见宽度 </span><br>  <span class="hljs-keyword">const</span> offsetWidth = el.<span class="hljs-property">offsetWidth</span><br>  <span class="hljs-keyword">const</span> clientWidth = el.<span class="hljs-property">clientWidth</span><br><br>  <span class="hljs-comment">// 判断是否出现滚动条并且滚动条是占据内容宽度的</span><br>  <span class="hljs-keyword">return</span> scrollHeight &gt; clientHeight &amp;&amp; offsetWidth &gt; clientWidth<br>&#125;<br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -1326,8 +1327,15 @@
   
     <span>></span>
     
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/" class="category-chain-item">微信小程序</a>
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/" class="category-chain-item">浏览器</a>
   
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/%E6%BB%9A%E5%8A%A8%E6%9D%A1/" class="category-chain-item">滚动条</a>
+  
+  
+
   
 
   
@@ -1343,7 +1351,9 @@
     <div class="post-meta">
       <i class="iconfont icon-tags"></i>
       
-        <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/">#微信小程序</a>
+        <a href="/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/">#浏览器</a>
+      
+        <a href="/tags/%E6%BB%9A%E5%8A%A8%E6%9D%A1/">#滚动条</a>
       
     </div>
   
@@ -1355,8 +1365,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>踩坑</div>
-      <div>https://hgj1999.github.io/2023/04/26/web前端/微信小程序/踩坑/</div>
+      <div>滚动条</div>
+      <div>https://hgj1999.github.io/2023/07/27/web前端/浏览器/02.滚动条/</div>
     </div>
     <div class="license-meta">
       
@@ -1368,7 +1378,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年4月26日</div>
+          <div>2023年7月27日</div>
         </div>
       
       
@@ -1400,9 +1410,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/CSS/%E9%9A%8F%E8%AE%B0/" title="随记">
+                      <a href="/2023/07/27/web%E5%89%8D%E7%AB%AF/%E9%A1%B9%E7%9B%AE%E6%8A%80%E5%B7%A7/01.%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81/" title="用户登录状态">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">随记</span>
+                        <span class="hidden-mobile">用户登录状态</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -1410,8 +1420,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/02.template/" title="template">
-                        <span class="hidden-mobile">template</span>
+                      <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/Vue2/%E7%94%9F%E6%80%81/vxe-table/%E9%9B%86%E6%88%90sortablejs%E5%AE%9E%E7%8E%B0%E6%8B%96%E6%8B%BD%E5%8A%9F%E8%83%BD/" title="集成sortablejs实现拖拽功能">
+                        <span class="hidden-mobile">集成sortablejs实现拖拽功能</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
