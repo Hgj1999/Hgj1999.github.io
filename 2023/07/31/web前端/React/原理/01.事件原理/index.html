@@ -19,7 +19,7 @@
     <meta name="description" content="事件原理react 独特的事件系统React 事件系统可以分为三个部分  第一个部分是事件合成系统，初始化会注册不同的事件插件。 第二个就是在一次渲染过程中，对事件标签中事件的收集，向 container 注册事件。 第三个就是一次用户交互，事件触发到事件执行一系列过程。  现状 给元素绑定的事件，不是真正的事件处理函数。 在冒泡&#x2F;捕获阶段绑定的事件，也不是在冒泡&#x2F;捕获阶段执行">
 <meta property="og:type" content="article">
 <meta property="og:title" content="事件原理">
-<meta property="og:url" content="https://hgj1999.github.io/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/01.%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:url" content="https://hgj1999.github.io/2023/07/31/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/01.%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/index.html">
 <meta property="og:site_name" content="点点星光的技术博客">
 <meta property="og:description" content="事件原理react 独特的事件系统React 事件系统可以分为三个部分  第一个部分是事件合成系统，初始化会注册不同的事件插件。 第二个就是在一次渲染过程中，对事件标签中事件的收集，向 container 注册事件。 第三个就是一次用户交互，事件触发到事件执行一系列过程。  现状 给元素绑定的事件，不是真正的事件处理函数。 在冒泡&#x2F;捕获阶段绑定的事件，也不是在冒泡&#x2F;捕获阶段执行">
 <meta property="og:locale" content="zh_CN">
@@ -28,8 +28,8 @@
 <meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event03.png">
 <meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event04.png">
 <meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event05.png">
-<meta property="article:published_time" content="2023-07-18T05:56:15.000Z">
-<meta property="article:modified_time" content="2023-07-31T09:49:01.914Z">
+<meta property="article:published_time" content="2023-07-31T05:56:15.000Z">
+<meta property="article:modified_time" content="2023-07-31T09:56:56.837Z">
 <meta property="article:author" content="Glimmering Stars">
 <meta property="article:tag" content="React">
 <meta property="article:tag" content="事件原理">
@@ -215,8 +215,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-07-18 13:56" pubdate>
-          2023年7月18日 下午
+        <time datetime="2023-07-31 13:56" pubdate>
+          2023年7月31日 下午
         </time>
       </span>
     
@@ -497,7 +497,7 @@
     
       
       
-        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/01.%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/" title="事件原理"
+        <a href="/2023/07/31/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/01.%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/" title="事件原理"
            class="list-group-item list-group-item-action
            active">
           <span class="category-post">事件原理</span>
@@ -1536,7 +1536,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>事件原理</div>
-      <div>https://hgj1999.github.io/2023/07/18/web前端/React/原理/01.事件原理/</div>
+      <div>https://hgj1999.github.io/2023/07/31/web前端/React/原理/01.事件原理/</div>
     </div>
     <div class="license-meta">
       
@@ -1548,7 +1548,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年7月18日</div>
+          <div>2023年7月31日</div>
         </div>
       
       
@@ -1580,9 +1580,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/09-%E9%AB%98%E9%98%B6%E7%BB%84%E4%BB%B6/" title="高阶组件">
+                      <a href="/2023/07/31/web%E5%89%8D%E7%AB%AF/%E9%A1%B9%E7%9B%AE%E6%8A%80%E5%B7%A7/02.%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D/" title="线上问题定位">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">高阶组件</span>
+                        <span class="hidden-mobile">线上问题定位</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -1590,8 +1590,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/04/28/web%E5%89%8D%E7%AB%AF/JavaScript/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/01.%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" title="类型转换">
-                        <span class="hidden-mobile">类型转换</span>
+                      <a href="/2023/07/27/web%E5%89%8D%E7%AB%AF/%E9%A1%B9%E7%9B%AE%E6%8A%80%E5%B7%A7/01.%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81/" title="用户登录状态">
+                        <span class="hidden-mobile">用户登录状态</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
