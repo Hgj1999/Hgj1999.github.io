@@ -1,0 +1,1862 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Glimmering Stars">
+  <meta name="keywords" content="技术博客">
+  
+    <meta name="description" content="事件原理react 独特的事件系统React 事件系统可以分为三个部分  第一个部分是事件合成系统，初始化会注册不同的事件插件。 第二个就是在一次渲染过程中，对事件标签中事件的收集，向 container 注册事件。 第三个就是一次用户交互，事件触发到事件执行一系列过程。  现状 给元素绑定的事件，不是真正的事件处理函数。 在冒泡&#x2F;捕获阶段绑定的事件，也不是在冒泡&#x2F;捕获阶段执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="事件原理">
+<meta property="og:url" content="https://hgj1999.github.io/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/01.%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:site_name" content="点点星光的技术博客">
+<meta property="og:description" content="事件原理react 独特的事件系统React 事件系统可以分为三个部分  第一个部分是事件合成系统，初始化会注册不同的事件插件。 第二个就是在一次渲染过程中，对事件标签中事件的收集，向 container 注册事件。 第三个就是一次用户交互，事件触发到事件执行一系列过程。  现状 给元素绑定的事件，不是真正的事件处理函数。 在冒泡&#x2F;捕获阶段绑定的事件，也不是在冒泡&#x2F;捕获阶段执行">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event01.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event02.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event03.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event04.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event05.png">
+<meta property="article:published_time" content="2023-07-18T05:56:15.000Z">
+<meta property="article:modified_time" content="2023-07-31T09:49:01.914Z">
+<meta property="article:author" content="Glimmering Stars">
+<meta property="article:tag" content="React">
+<meta property="article:tag" content="事件原理">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event01.png">
+  
+  
+  
+  <title>事件原理 - 点点星光的技术博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hgj1999.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Glimmering Stars&#39; Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="事件原理"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-07-18 13:56" pubdate>
+          2023年7月18日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          7.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          63 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="web前端"
+        id="heading-348c88b2fce1b2a4dca21addc7a9b510" role="tab" data-toggle="collapse" href="#collapse-348c88b2fce1b2a4dca21addc7a9b510"
+        aria-expanded="true"
+      >
+        web前端
+        <span class="list-group-count">(39)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-348c88b2fce1b2a4dca21addc7a9b510"
+           role="tabpanel" aria-labelledby="heading-348c88b2fce1b2a4dca21addc7a9b510">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="CSS"
+        id="heading-2c56c360580420d293172f42d85dfbed" role="tab" data-toggle="collapse" href="#collapse-2c56c360580420d293172f42d85dfbed"
+        aria-expanded="false"
+      >
+        CSS
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-2c56c360580420d293172f42d85dfbed"
+           role="tabpanel" aria-labelledby="heading-2c56c360580420d293172f42d85dfbed">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/CSS/%E9%9A%8F%E8%AE%B0/" title="随记"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">随记</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="JavaScript"
+        id="heading-686155af75a60a0f6e9d80c1f7edd3e9" role="tab" data-toggle="collapse" href="#collapse-686155af75a60a0f6e9d80c1f7edd3e9"
+        aria-expanded="false"
+      >
+        JavaScript
+        <span class="list-group-count">(5)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-686155af75a60a0f6e9d80c1f7edd3e9"
+           role="tabpanel" aria-labelledby="heading-686155af75a60a0f6e9d80c1f7edd3e9">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/JavaScript/%E7%B2%BE%E7%A1%AE%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97/" title="精确四则运算"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">精确四则运算</span>
+        </a>
+      
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="底层原理"
+        id="heading-e971e343a0d37a51a1e03601a2c87f42" role="tab" data-toggle="collapse" href="#collapse-e971e343a0d37a51a1e03601a2c87f42"
+        aria-expanded="false"
+      >
+        底层原理
+        <span class="list-group-count">(4)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-e971e343a0d37a51a1e03601a2c87f42"
+           role="tabpanel" aria-labelledby="heading-e971e343a0d37a51a1e03601a2c87f42">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/28/web%E5%89%8D%E7%AB%AF/JavaScript/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/01.%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" title="类型转换"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">类型转换</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/28/web%E5%89%8D%E7%AB%AF/JavaScript/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/02.%E8%B0%83%E7%94%A8%E5%A0%86%E6%A0%88%E4%B8%8Ethis/" title="调用堆栈与this"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">调用堆栈与this</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/28/web%E5%89%8D%E7%AB%AF/JavaScript/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/03.%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" title="内存管理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">内存管理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/28/web%E5%89%8D%E7%AB%AF/JavaScript/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/04.%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%93%BE%E5%92%8C%E9%97%AD%E5%8C%85/" title="作用域链和闭包"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">作用域链和闭包</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="React"
+        id="heading-50ce2da63bea6a618e7578fa50690040" role="tab" data-toggle="collapse" href="#collapse-50ce2da63bea6a618e7578fa50690040"
+        aria-expanded="true"
+      >
+        React
+        <span class="list-group-count">(10)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-50ce2da63bea6a618e7578fa50690040"
+           role="tabpanel" aria-labelledby="heading-50ce2da63bea6a618e7578fa50690040">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="原理"
+        id="heading-b6724cffe9b1e39a5652a348831a4e0d" role="tab" data-toggle="collapse" href="#collapse-b6724cffe9b1e39a5652a348831a4e0d"
+        aria-expanded="true"
+      >
+        原理
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-b6724cffe9b1e39a5652a348831a4e0d"
+           role="tabpanel" aria-labelledby="heading-b6724cffe9b1e39a5652a348831a4e0d">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/01.%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/" title="事件原理"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">事件原理</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="基础"
+        id="heading-0796ba76b4b553687e5ffaeb78512ccb" role="tab" data-toggle="collapse" href="#collapse-0796ba76b4b553687e5ffaeb78512ccb"
+        aria-expanded="false"
+      >
+        基础
+        <span class="list-group-count">(9)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-0796ba76b4b553687e5ffaeb78512ccb"
+           role="tabpanel" aria-labelledby="heading-0796ba76b4b553687e5ffaeb78512ccb">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/01-JSX/" title="JSX"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">JSX</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/02-Component/" title="Component"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Component</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/03-State/" title="State"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">State</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/04-Props/" title="Props"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Props</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/05-lifeCycle/" title="lifeCycle"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">lifeCycle</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/06-Ref/" title="Ref"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Ref</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/07-Context/" title="Context"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Context</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/08-CSS%E6%A8%A1%E5%9D%97%E5%8C%96/" title="CSS模块化"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">CSS模块化</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/09-%E9%AB%98%E9%98%B6%E7%BB%84%E4%BB%B6/" title="高阶组件"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">高阶组件</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="TypeScript"
+        id="heading-558b544cf685f39d34e4903e39c38b67" role="tab" data-toggle="collapse" href="#collapse-558b544cf685f39d34e4903e39c38b67"
+        aria-expanded="false"
+      >
+        TypeScript
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-558b544cf685f39d34e4903e39c38b67"
+           role="tabpanel" aria-labelledby="heading-558b544cf685f39d34e4903e39c38b67">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/21/web%E5%89%8D%E7%AB%AF/TypeScript/%E5%9F%BA%E7%A1%80/" title="基础"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">基础</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Vue2"
+        id="heading-b5bc4fae52caba546fa469b33a1f7efd" role="tab" data-toggle="collapse" href="#collapse-b5bc4fae52caba546fa469b33a1f7efd"
+        aria-expanded="false"
+      >
+        Vue2
+        <span class="list-group-count">(8)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-b5bc4fae52caba546fa469b33a1f7efd"
+           role="tabpanel" aria-labelledby="heading-b5bc4fae52caba546fa469b33a1f7efd">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="原理"
+        id="heading-b6724cffe9b1e39a5652a348831a4e0d" role="tab" data-toggle="collapse" href="#collapse-b6724cffe9b1e39a5652a348831a4e0d"
+        aria-expanded="false"
+      >
+        原理
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-b6724cffe9b1e39a5652a348831a4e0d"
+           role="tabpanel" aria-labelledby="heading-b6724cffe9b1e39a5652a348831a4e0d">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/01.observe/" title="observe"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">observe</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/02.template/" title="template"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">template</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/03.init%20render/" title="init render"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">init render</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/04.update%20render/" title="update render"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">update render</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/05.watch/" title="watch"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">watch</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/06.computed/" title="computed"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">computed</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="生态"
+        id="heading-2bbb08c8b90b98a98ee6940d899b794d" role="tab" data-toggle="collapse" href="#collapse-2bbb08c8b90b98a98ee6940d899b794d"
+        aria-expanded="false"
+      >
+        生态
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-2bbb08c8b90b98a98ee6940d899b794d"
+           role="tabpanel" aria-labelledby="heading-2bbb08c8b90b98a98ee6940d899b794d">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="vxe-table"
+        id="heading-7e0799eacd75b19d26626e298e9212bf" role="tab" data-toggle="collapse" href="#collapse-7e0799eacd75b19d26626e298e9212bf"
+        aria-expanded="false"
+      >
+        vxe-table
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-7e0799eacd75b19d26626e298e9212bf"
+           role="tabpanel" aria-labelledby="heading-7e0799eacd75b19d26626e298e9212bf">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E7%94%9F%E6%80%81/vxe-table/%E8%B8%A9%E5%9D%91/" title="踩坑"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">踩坑</span>
+        </a>
+      
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="drag"
+        id="heading-9fa45db736cfb8a6df80fcad7a79d7fd" role="tab" data-toggle="collapse" href="#collapse-9fa45db736cfb8a6df80fcad7a79d7fd"
+        aria-expanded="false"
+      >
+        drag
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-9fa45db736cfb8a6df80fcad7a79d7fd"
+           role="tabpanel" aria-labelledby="heading-9fa45db736cfb8a6df80fcad7a79d7fd">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="sortablejs"
+        id="heading-f1d4baa153c3b58c7ad2556baf21f37e" role="tab" data-toggle="collapse" href="#collapse-f1d4baa153c3b58c7ad2556baf21f37e"
+        aria-expanded="false"
+      >
+        sortablejs
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-f1d4baa153c3b58c7ad2556baf21f37e"
+           role="tabpanel" aria-labelledby="heading-f1d4baa153c3b58c7ad2556baf21f37e">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/Vue2/%E7%94%9F%E6%80%81/vxe-table/%E9%9B%86%E6%88%90sortablejs%E5%AE%9E%E7%8E%B0%E6%8B%96%E6%8B%BD%E5%8A%9F%E8%83%BD/" title="集成sortablejs实现拖拽功能"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">集成sortablejs实现拖拽功能</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Vue3"
+        id="heading-79dcf464d3e1b41635e194883d0c939a" role="tab" data-toggle="collapse" href="#collapse-79dcf464d3e1b41635e194883d0c939a"
+        aria-expanded="false"
+      >
+        Vue3
+        <span class="list-group-count">(7)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-79dcf464d3e1b41635e194883d0c939a"
+           role="tabpanel" aria-labelledby="heading-79dcf464d3e1b41635e194883d0c939a">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="原理"
+        id="heading-b6724cffe9b1e39a5652a348831a4e0d" role="tab" data-toggle="collapse" href="#collapse-b6724cffe9b1e39a5652a348831a4e0d"
+        aria-expanded="false"
+      >
+        原理
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-b6724cffe9b1e39a5652a348831a4e0d"
+           role="tabpanel" aria-labelledby="heading-b6724cffe9b1e39a5652a348831a4e0d">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E5%8E%9F%E7%90%86/observe/" title="observe"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">observe</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="生态"
+        id="heading-2bbb08c8b90b98a98ee6940d899b794d" role="tab" data-toggle="collapse" href="#collapse-2bbb08c8b90b98a98ee6940d899b794d"
+        aria-expanded="false"
+      >
+        生态
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-2bbb08c8b90b98a98ee6940d899b794d"
+           role="tabpanel" aria-labelledby="heading-2bbb08c8b90b98a98ee6940d899b794d">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="nuxt3"
+        id="heading-fc69c1cad2d55a934383c957f4133484" role="tab" data-toggle="collapse" href="#collapse-fc69c1cad2d55a934383c957f4133484"
+        aria-expanded="false"
+      >
+        nuxt3
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-fc69c1cad2d55a934383c957f4133484"
+           role="tabpanel" aria-labelledby="heading-fc69c1cad2d55a934383c957f4133484">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/01.%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2%E5%A4%84%E7%90%86/" title="错误页面处理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">错误页面处理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/02.%E9%94%99%E8%AF%AF%E6%97%A5%E5%BF%97%E8%AE%B0%E5%BD%95%E6%96%B9%E6%A1%88/" title="错误页面处理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">错误页面处理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/03.%E5%AF%BC%E8%88%AA%E6%A0%8F%E9%94%9A%E7%82%B9/" title="导航栏锚点"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">导航栏锚点</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/04.%E6%B7%BB%E5%8A%A0%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81/" title="添加百度统计代码"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">添加百度统计代码</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/05.cdn%E6%96%B9%E6%A1%88/" title="cdn 方案"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">cdn 方案</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/06.%E6%B7%BB%E5%8A%A0%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" title="添加环境变量"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">添加环境变量</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="uniapp"
+        id="heading-0094539787173fdbc36ecf1c1827193a" role="tab" data-toggle="collapse" href="#collapse-0094539787173fdbc36ecf1c1827193a"
+        aria-expanded="false"
+      >
+        uniapp
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-0094539787173fdbc36ecf1c1827193a"
+           role="tabpanel" aria-labelledby="heading-0094539787173fdbc36ecf1c1827193a">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/uniapp/%E8%B8%A9%E5%9D%91/" title="踩坑"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">踩坑</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="微信小程序"
+        id="heading-439845b85c0a405cebc2e738b0786f15" role="tab" data-toggle="collapse" href="#collapse-439845b85c0a405cebc2e738b0786f15"
+        aria-expanded="false"
+      >
+        微信小程序
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-439845b85c0a405cebc2e738b0786f15"
+           role="tabpanel" aria-labelledby="heading-439845b85c0a405cebc2e738b0786f15">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E8%B8%A9%E5%9D%91/" title="踩坑"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">踩坑</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/Mixins%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88/" title="Mixins 实现方案"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Mixins 实现方案</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="浏览器"
+        id="heading-912302cb020149c37f9642fbc9e42891" role="tab" data-toggle="collapse" href="#collapse-912302cb020149c37f9642fbc9e42891"
+        aria-expanded="false"
+      >
+        浏览器
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-912302cb020149c37f9642fbc9e42891"
+           role="tabpanel" aria-labelledby="heading-912302cb020149c37f9642fbc9e42891">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/01.%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%8Ejs/" title="浏览器与js"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">浏览器与js</span>
+        </a>
+      
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="滚动条"
+        id="heading-47f0022e8e7a23f5a332273686eef9a7" role="tab" data-toggle="collapse" href="#collapse-47f0022e8e7a23f5a332273686eef9a7"
+        aria-expanded="false"
+      >
+        滚动条
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-47f0022e8e7a23f5a332273686eef9a7"
+           role="tabpanel" aria-labelledby="heading-47f0022e8e7a23f5a332273686eef9a7">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/27/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/02.%E6%BB%9A%E5%8A%A8%E6%9D%A1/" title="滚动条"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">滚动条</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="项目技巧"
+        id="heading-ec50b9dea63b6fd38b433e14854cc36a" role="tab" data-toggle="collapse" href="#collapse-ec50b9dea63b6fd38b433e14854cc36a"
+        aria-expanded="false"
+      >
+        项目技巧
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-ec50b9dea63b6fd38b433e14854cc36a"
+           role="tabpanel" aria-labelledby="heading-ec50b9dea63b6fd38b433e14854cc36a">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="用户登录状态"
+        id="heading-f8674457fa9cdaf3d5dabc71e9377947" role="tab" data-toggle="collapse" href="#collapse-f8674457fa9cdaf3d5dabc71e9377947"
+        aria-expanded="false"
+      >
+        用户登录状态
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-f8674457fa9cdaf3d5dabc71e9377947"
+           role="tabpanel" aria-labelledby="heading-f8674457fa9cdaf3d5dabc71e9377947">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/27/web%E5%89%8D%E7%AB%AF/%E9%A1%B9%E7%9B%AE%E6%8A%80%E5%B7%A7/01.%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81/" title="用户登录状态"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">用户登录状态</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="线上问题定位"
+        id="heading-5be97ad5d1e33465328a4d92907367e8" role="tab" data-toggle="collapse" href="#collapse-5be97ad5d1e33465328a4d92907367e8"
+        aria-expanded="false"
+      >
+        线上问题定位
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-5be97ad5d1e33465328a4d92907367e8"
+           role="tabpanel" aria-labelledby="heading-5be97ad5d1e33465328a4d92907367e8">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/31/web%E5%89%8D%E7%AB%AF/%E9%A1%B9%E7%9B%AE%E6%8A%80%E5%B7%A7/02.%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D/" title="线上问题定位"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">线上问题定位</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">事件原理</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="事件原理"><a href="#事件原理" class="headerlink" title="事件原理"></a>事件原理</h1><h2 id="react-独特的事件系统"><a href="#react-独特的事件系统" class="headerlink" title="react 独特的事件系统"></a>react 独特的事件系统</h2><p>React 事件系统可以分为三个部分</p>
+<ul>
+<li>第一个部分是事件合成系统，初始化会注册不同的事件插件。</li>
+<li>第二个就是在一次渲染过程中，对事件标签中事件的收集，向 <code>container</code> 注册事件。</li>
+<li>第三个就是一次用户交互，事件触发到事件执行一系列过程。</li>
+</ul>
+<h3 id="现状"><a href="#现状" class="headerlink" title="现状"></a>现状</h3><ul>
+<li>给元素绑定的事件，不是真正的事件处理函数。</li>
+<li>在冒泡&#x2F;捕获阶段绑定的事件，也不是在冒泡&#x2F;捕获阶段执行的。</li>
+<li>甚至在事件处理函数中拿到的事件源 e，也不是真正的事件源 e。</li>
+</ul>
+<h3 id="由来"><a href="#由来" class="headerlink" title="由来"></a>由来</h3><ul>
+<li>抹平不同浏览器的差异：对于不同的浏览器，对事件存在不同的兼容性 。</li>
+<li>为了 <code>ssr</code> 和跨端的支持</li>
+</ul>
+<h3 id="版本差异"><a href="#版本差异" class="headerlink" title="版本差异"></a>版本差异</h3><ul>
+<li>V17 之前的 React 事件都是绑定在 document 上，V17 之后 React 把事件绑定在应用对应的容器 container 上<br>  将事件绑定在统一容器统一管理，防止很多事件直接绑定在原生的 DOM 元素上。造成一些不可控的情况。由于不是绑定在真实的 DOM 上，所以 React 需要模拟一套事件流：事件捕获-&gt;事件源-&gt;事件冒泡，也包括重写一下事件源对象 event。</li>
+</ul>
+<h2 id="独特的事件处理"><a href="#独特的事件处理" class="headerlink" title="独特的事件处理"></a>独特的事件处理</h2><h3 id="冒泡阶段和捕获阶段"><a href="#冒泡阶段和捕获阶段" class="headerlink" title="冒泡阶段和捕获阶段"></a>冒泡阶段和捕获阶段</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">Index</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleClick</span>=(<span class="hljs-params"></span>)=&gt;&#123; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;模拟冒泡阶段执行&#x27;</span>) &#125;<br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleClick</span>=(<span class="hljs-params"></span>)=&gt;&#123; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;模拟捕获阶段执行&#x27;</span>) &#125;<br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">handleClick</span> &#125; <span class="hljs-attr">onClickCapture</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">handleClickCapture</span> &#125;&gt;</span>点击<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>&#125;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>冒泡阶段：开发者正常给 React 绑定的事件比如 onClick，onChange，默认会模拟冒泡阶段执行。</li>
+<li>捕获阶段：如果想要在捕获阶段执行可以将事件后面加上 Capture 后缀，比如 onClickCapture，onChangeCapture。</li>
+</ul>
+<h3 id="阻止冒泡"><a href="#阻止冒泡" class="headerlink" title="阻止冒泡"></a>阻止冒泡</h3><p>调用 <code>e.stopPropagation()</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">Index</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleClick</span>=(<span class="hljs-params">e</span>)=&gt;&#123;<br>    e.<span class="hljs-title function_">stopPropagation</span>() <span class="hljs-comment">// 阻止事件冒泡，handleFatherClick 事件将不触发</span><br>  &#125;<br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleFatherClick</span>=(<span class="hljs-params"></span>)=&gt;<span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;冒泡到父级&#x27;</span>)<br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">handleFatherClick</span> &#125;&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">handleClick</span> &#125;&gt;</span>点击<span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>&#125;<br></code></pre></td></tr></table></figure>
+<ul>
+<li>React 阻止冒泡和原生事件中的写法差不多，当如上 <code>handleClick上</code> 阻止冒泡，父级元素的 <code>handleFatherClick</code> 将不再执行，但是底层原理完全不同</li>
+</ul>
+<h3 id="阻止默认行为"><a href="#阻止默认行为" class="headerlink" title="阻止默认行为"></a>阻止默认行为</h3><p><strong>原生事件：</strong> <code>e.preventDefault()</code> 和<code>return false</code> 可以用来阻止事件默认行为，由于在 React 中给元素的事件并不是真正的事件处理函数。所以导致 return false 方法在 React 应用中完全失去了作用。<br><strong>React事件：</strong> 在React 应用中，可以用 <code>e.preventDefault()</code> 阻止事件默认行为，这个方法并非是原生事件的 <code>preventDefault，由于</code> React 事件源 e 也是独立组建的，所以 <code>preventDefault</code> 也是单独处理的。</p>
+<h2 id="事件合成"><a href="#事件合成" class="headerlink" title="事件合成"></a>事件合成</h2><h3 id="事件合成概念"><a href="#事件合成概念" class="headerlink" title="事件合成概念"></a>事件合成概念</h3><p><strong>案例：</strong> 在整个 React 应用中只绑定一个事件：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">Index</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleClick</span> = (<span class="hljs-params"></span>) =&gt; &#123;&#125;<br>  <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span>&gt;</span></span><br><span class="language-xml">      <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">handleClick</span> &#125;&gt;</span>点击<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">  <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>上面在 <code>button</code> 元素绑定的事件中，没有找到 <code>handleClick</code> 事件。但是在 <code>document</code> 上绑定一个 <code>onClick</code> 事件<br><strong>总结：</strong> </p>
+<ul>
+<li>React 的事件不是绑定在元素上的，而是统一绑定在顶部容器上，在 v17 之前是绑定在 document 上的，在 v17 改成了 app 容器上，这样更有利于一个 html 下存在多个应用（微前端）</li>
+<li>绑定事件并不是一次性绑定所有事件，比如发现了 onClick 事件，就会绑定 click 事件，比如发现 onChange 事件，会绑定 <code>[blur，change ，focus ，keydown，keyup]</code> 多个事件。</li>
+<li>React 事件合成的概念：React 应用中，元素绑定的事件并不是原生事件，而是 React 合成的事件，比如 onClick 是由 click 合成的，onChange 是由 blur，change，focus 等多个事件合成。</li>
+</ul>
+<h3 id="事件插件机制"><a href="#事件插件机制" class="headerlink" title="事件插件机制"></a>事件插件机制</h3><p>React 有一种事件插件机制，比如上述的 onClick 和 onChange，会有不同的事件插件 <code>SimpleEventPlugin</code>，<code>ChangeEventPlugin</code> 处理。</p>
+<p><strong><code>registrationNameModules</code></strong> </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> registrationNameModules = &#123;<br>  <span class="hljs-attr">onBlur</span>: <span class="hljs-title class_">SimpleEventPlugin</span>,<br>  <span class="hljs-attr">onClick</span>: <span class="hljs-title class_">SimpleEventPlugin</span>,<br>  <span class="hljs-attr">onClickCapture</span>: <span class="hljs-title class_">SimpleEventPlugin</span>,<br>  <span class="hljs-attr">onChange</span>: <span class="hljs-title class_">ChangeEventPlugin</span>,<br>  <span class="hljs-attr">onChangeCapture</span>: <span class="hljs-title class_">ChangeEventPlugin</span>,<br>  <span class="hljs-attr">onMouseEnter</span>: <span class="hljs-title class_">EnterLeaveEventPlugin</span>,<br>  <span class="hljs-attr">onMouseLeave</span>: <span class="hljs-title class_">EnterLeaveEventPlugin</span>,<br>  ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><code>registrationNameModules</code> 记录了 React 事件（比如 onBlur ）和与之对应的处理插件的映射，比如上述的  onClick ，就会用 <code>ChangeEventPlugin</code> 插件处理，<code>onChange</code> 就会用 <code>ChangeEventPlugin</code>  处理。应用于事件触发阶段，根据不同事件使用不同的插件。</p>
+<p>对于不同的事件，有不同的处理逻辑；对应的事件源对象也有所不同，React 的事件和事件源是自己合成的，所以对于不同事件需要不同的事件插件处理。<br><strong><code>registrationNameDependencies</code></strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript">&#123;<br>  <span class="hljs-attr">onBlur</span>: [<span class="hljs-string">&#x27;blur&#x27;</span>],<br>  <span class="hljs-attr">onClick</span>: [<span class="hljs-string">&#x27;click&#x27;</span>],<br>  <span class="hljs-attr">onClickCapture</span>: [<span class="hljs-string">&#x27;click&#x27;</span>],<br>  <span class="hljs-attr">onChange</span>: [<span class="hljs-string">&#x27;blur&#x27;</span>, <span class="hljs-string">&#x27;change&#x27;</span>, <span class="hljs-string">&#x27;click&#x27;</span>, <span class="hljs-string">&#x27;focus&#x27;</span>, <span class="hljs-string">&#x27;input&#x27;</span>, <span class="hljs-string">&#x27;keydown&#x27;</span>, <span class="hljs-string">&#x27;keyup&#x27;</span>, <span class="hljs-string">&#x27;selectionchange&#x27;</span>],<br>  <span class="hljs-attr">onMouseEnter</span>: [<span class="hljs-string">&#x27;mouseout&#x27;</span>, <span class="hljs-string">&#x27;mouseover&#x27;</span>],<br>  <span class="hljs-attr">onMouseLeave</span>: [<span class="hljs-string">&#x27;mouseout&#x27;</span>, <span class="hljs-string">&#x27;mouseover&#x27;</span>],<br>   ...<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>这个对象保存了 React 事件和原生事件对应关系，这就解释了为什么上述只写了一个 onChange ，会有很多原生事件绑定在 document 上。在事件绑定阶段，如果发现有 React 事件，比如 onChange ，就会找到对应的原生事件数组，逐一绑定。</p>
+<h2 id="事件绑定"><a href="#事件绑定" class="headerlink" title="事件绑定"></a>事件绑定</h2><p>事件绑定就是在 React 处理 props 时候，如果遇到事件比如 onClick，就会通过 addEventListener 注册原生事件。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">Index</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleClick</span> = (<span class="hljs-params"></span>) =&gt; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;点击事件&#x27;</span>)<br>  <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleChange</span> = (<span class="hljs-params"></span>) =&gt; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&#x27;change事件&#x27;</span>)<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>对如上结构，最后 onChange 和 onClick 会保存在对应 DOM 元素类型 fiber 对象（hostComponent）的 memoizedProps 属性上，如上结构会变成这样：<br><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event01.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<ol>
+<li>React 根据事件注册事件监听器<blockquote>
+<p>react-dom&#x2F;src&#x2F;client&#x2F;ReactDOMComponent.js</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">diffProperties</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-comment">// 判断当前的 propKey 是不是 React 合成事件</span><br>  <span class="hljs-keyword">if</span> (registrationNameModules.<span class="hljs-title function_">hasOwnProperty</span>(propKey)) &#123;<br>    <span class="hljs-comment">// 这里多个函数简化了，如果是合成事件，传入合成事件名称 onClick，向 document 注册事件</span><br>    <span class="hljs-title function_">legacyListenToEvent</span>(registrationName, <span class="hljs-variable language_">document</span>)<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<code>diffProperties</code> 函数在 diff props 如果发现是合成事件( onClick ) 就会调用 <code>legacyListenToEvent</code> 函数。注册事件监听器。接下来看一下 <code>legacyListenToEvent</code> 是如何注册事件的。<blockquote>
+<p>react-dom&#x2F;src&#x2F;events&#x2F;DOMLegacyEventPluginSystem.js</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">legacyListenToEvent</span>(<span class="hljs-params">registrationName, mountAt</span>) &#123;<br>  <span class="hljs-keyword">const</span> dependencies = registrationNameDependencies[registrationName]; <span class="hljs-comment">// 根据 onClick 获取 onClick 依赖的时间组件 [&#x27;click&#x27;]</span><br>  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>; i &lt; dependencies.<span class="hljs-property">length</span>; i++) &#123;<br>    <span class="hljs-keyword">const</span> dependency = dependencies[i];<br>    <span class="hljs-comment">// addEventListener 绑定事件监听器</span><br>    <span class="hljs-comment">// ...</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure></li>
+</ol>
+<ul>
+<li>这个就是应用上述 <code>registrationNameDependencies</code> 对 React 合成事件，分别绑定原生事件的事件监听器。比如发现是 onChange，那么取出 <code>[&#39;blur&#39;, &#39;change&#39;, &#39;click&#39;, &#39;focus&#39;, &#39;input&#39;, &#39;keydown&#39;, &#39;keyup&#39;, &#39;selectionchange&#39;]</code> 遍历绑定。</li>
+</ul>
+<ol start="2">
+<li>通过 <code>addEventListener</code> 真正绑定事件<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">const</span> listener = dispatchEvent.<span class="hljs-title function_">bind</span>(<span class="hljs-literal">null</span>,<span class="hljs-string">&#x27;click&#x27;</span>,eventSystemFlags,<span class="hljs-variable language_">document</span>)<br><span class="hljs-comment">// 主要，这里进行真正的事件绑定</span><br><span class="hljs-variable language_">document</span>.<span class="hljs-title function_">addEventListener</span>(<span class="hljs-string">&#x27;click&#x27;</span>,listener, <span class="hljs-literal">false</span>)<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="事件触发"><a href="#事件触发" class="headerlink" title="事件触发"></a>事件触发</h2><p><strong>案例</strong> </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">Index</span>(<span class="hljs-params"></span>) &#123;<br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleClick1</span> = (<span class="hljs-params"></span>) =&gt; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleClick2</span> = (<span class="hljs-params"></span>) =&gt; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">2</span>)<br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleClick3</span> = (<span class="hljs-params"></span>) =&gt; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">3</span>)<br>    <span class="hljs-keyword">const</span> <span class="hljs-title function_">handleClick4</span> = (<span class="hljs-params"></span>) =&gt; <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-number">4</span>)<br>      <span class="hljs-keyword">return</span> <span class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">handleClick3</span> &#125;  <span class="hljs-attr">onClickCapture</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">handleClick4</span> &#125;  &gt;</span></span><br><span class="language-xml">        <span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">handleClick1</span> &#125;  <span class="hljs-attr">onClickCapture</span>=<span class="hljs-string">&#123;</span> <span class="hljs-attr">handleClick2</span> &#125;  &gt;</span>点击<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span><br><span class="language-xml">    <span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span><br>&#125;<br></code></pre></td></tr></table></figure>
+<p>点击以上按钮，在 React 中的流程如下:</p>
+<h3 id="1-批量更新"><a href="#1-批量更新" class="headerlink" title="1. 批量更新"></a>1. 批量更新</h3><p>执行 dispatchEvent，dispatchEvent 执行会传入真实的事件源 button 元素本身，通过元素可以找到 button 对应的 fiber。</p>
+<p>React 在初始化真实 DOM 的时候，用一个随机的 key internalInstanceKey  指针指向了当前 DOM 对应的 fiber 对象，fiber 对象用 stateNode 指向了当前的 DOM 元素。<br><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event02.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>批量更新</p>
+<blockquote>
+<p>react-dom&#x2F;src&#x2F;events&#x2F;ReactDOMUpdateBatching.js</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">export</span> <span class="hljs-keyword">function</span> <span class="hljs-title function_">batchedEventUpdates</span>(<span class="hljs-params">fn, a</span>) &#123;<br>  isBatchingEventUpdates = <span class="hljs-literal">true</span>; <span class="hljs-comment">// 打开批量更新开关</span><br>  <span class="hljs-keyword">try</span>&#123;<br>    <span class="hljs-title function_">fn</span>(a) <span class="hljs-comment">// 事件在这里执行</span><br>  &#125; <span class="hljs-keyword">finally</span> &#123;<br>    isBatchingEventUpdates = <span class="hljs-literal">false</span> <span class="hljs-comment">// 关闭批量更新开关</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event03.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="2-合成事件源"><a href="#2-合成事件源" class="headerlink" title="2. 合成事件源"></a>2. 合成事件源</h3><p>接下来会通过 onClick 找到对应的处理插件 SimpleEventPlugin，合成新的事件源 e，里面包含了 preventDefault 和 stopPropagation 等方法。<br><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event04.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="3-形成事件执行队列"><a href="#3-形成事件执行队列" class="headerlink" title="3. 形成事件执行队列"></a>3. 形成事件执行队列</h3><p>在第一步通过原生 DOM 获取到对应的 fiber，接着会从这个 fiber 向上遍历，遇到元素类型 fiber，就会收集事件，用一个数组收集事件：</p>
+<ul>
+<li>如果遇到捕获阶段事件 onClickCapture，就会 unshift 放在数组前面。以此模拟事件捕获阶段。</li>
+<li>如果遇到冒泡阶段事件 onClick，就会 push 到数组后面，模拟事件冒泡阶段。</li>
+<li>一直收集到最顶端 app，形成执行队列，在接下来阶段，依次执行队列里面的函数<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">while</span> (instance !== <span class="hljs-literal">null</span>) &#123;<br>  <span class="hljs-keyword">const</span> &#123; stateNode, tag &#125; = instance;<br>  <span class="hljs-keyword">if</span> (tag === <span class="hljs-title class_">HostComponent</span> &amp;&amp; stateNode !== <span class="hljs-literal">null</span>) &#123; <span class="hljs-comment">// DOM 元素</span><br>    <span class="hljs-keyword">const</span> currentTarget = stateNode;<br>    <span class="hljs-keyword">if</span> (captured !== <span class="hljs-literal">null</span>) &#123; <span class="hljs-comment">// 事件捕获</span><br>      <span class="hljs-comment">// 在事件捕获阶段，真正的事件处理函数</span><br>      <span class="hljs-keyword">const</span> captureListener = <span class="hljs-title function_">getListener</span>(instance, captured); <span class="hljs-comment">// onClickCapture</span><br>      <span class="hljs-keyword">if</span> (captureListener != <span class="hljs-literal">null</span>) &#123;<br>        <span class="hljs-comment">// 对应发生在事件捕获阶段的处理函数，逻辑是将执行函数 unshift 添加到队列的最前面</span><br>        dispatchListeners.<span class="hljs-title function_">unshift</span>(captureListener);<br>      &#125;<br>    &#125;<br>    <span class="hljs-keyword">if</span> (bubbled !== <span class="hljs-literal">null</span>) &#123; <span class="hljs-comment">// 事件冒泡</span><br>        <span class="hljs-comment">// 事件冒泡阶段，真正的事件处理函数，逻辑是将执行函数 push 到执行队列的最后面</span><br>      <span class="hljs-keyword">const</span> bubbleListener = <span class="hljs-title function_">getListener</span>(instance, bubbled);<br>      <span class="hljs-keyword">if</span> (bubbleListener != <span class="hljs-literal">null</span>) &#123;<br>        dispatchListeners.<span class="hljs-title function_">push</span>(bubbleListtener); <span class="hljs-comment">// onClick</span><br>      &#125;<br>    &#125;<br>  &#125;<br>  instance = instance.<span class="hljs-property">return</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+那么如上点击一次按钮，4 个事件执行顺序是这样的：</li>
+<li>首先第一次收集是在 button 上，handleClick1 冒泡事件 push 处理，handleClick2 捕获事件 unshift 处理。形成结构<code>[ handleClick2, handleClick1 ]</code></li>
+<li>然后接着向上收集，遇到父级，收集父级 div 上的事件，handleClick3 冒泡事件 push 处理，handleClick4 捕获时间 unshift 处理。<code>[handleClick4, handleClick2, handleClick1, handleClick3]</code></li>
+<li>依次执行数组里面的事件，所以打印 4 2 1 3</li>
+</ul>
+<p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/event05.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h3 id="模拟阻止事件冒泡"><a href="#模拟阻止事件冒泡" class="headerlink" title="模拟阻止事件冒泡"></a>模拟阻止事件冒泡</h3><blockquote>
+<p>legacy-events&#x2F;EventBatching.js</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">runEventsInBatch</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-keyword">const</span> dispatchListeners = event.<span class="hljs-property">_dispatchListenners</span>;<br>  <span class="hljs-keyword">if</span> (<span class="hljs-title class_">Array</span>.<span class="hljs-title function_">isArray</span>(dispatchListeners)) &#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> i = <span class="hljs-number">0</span>;i &lt; dispatchListeners.<span class="hljs-property">length</span>; i++) &#123;<br>      <span class="hljs-keyword">if</span> (event.<span class="hljs-title function_">isPropagationStopped</span>()) &#123; <span class="hljs-comment">// 判断是否已经阻止事件冒泡</span><br>        <span class="hljs-keyword">break</span>;<br>      &#125;<br>      dispatchListeners[i](event) <span class="hljs-comment">// 执行真正的处理函数 及 handleClick1 ...</span><br>    &#125;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>对于上述队列 <code>[handleClick4, handleClick2 , handleClick1, handleClick]</code></p>
+<ul>
+<li>假设在上述队列中，handleClick2 中调用 <code>event.stopPropagation()</code>，那么事件源里将有状态证明此次事件已经停止冒泡，那么下次遍历的时候，<code>event.isPropagationStopped()</code>就会返回 true，所以跳出循环，handleClick1，handleClick3 将不再执行，模拟了阻止事件冒泡的过程。</li>
+</ul>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/" class="category-chain-item">React</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/" class="category-chain-item">原理</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/React/">#React</a>
+      
+        <a href="/tags/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/">#事件原理</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>事件原理</div>
+      <div>https://hgj1999.github.io/2023/07/18/web前端/React/原理/01.事件原理/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Glimmering Stars</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年7月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/09-%E9%AB%98%E9%98%B6%E7%BB%84%E4%BB%B6/" title="高阶组件">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">高阶组件</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/28/web%E5%89%8D%E7%AB%AF/JavaScript/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/01.%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" title="类型转换">
+                        <span class="hidden-mobile">类型转换</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+      Ever Forward
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
