@@ -227,6 +227,314 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/04.%E8%B0%83%E5%BA%A6%E4%BB%BB%E5%8A%A1/" target="_self">
+          调度任务
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/04.%E8%B0%83%E5%BA%A6%E4%BB%BB%E5%8A%A1/" target="_self">
+        <div>
+          1. 调度和调和的总结1.1 调度 调度：首先调度目的针对多个更新任务的情况，调度让多个任务井然有序的执行，执行任务的同时，也不要影响浏览器的绘制。调度决定着更新任务的执行时期。  调度的作用： 在多个任务的情况下，如果一口气执行完所有更新任务，那么就会阻塞浏览器的正常渲染，给用户的体验就是卡住了。那么调度任务就是每一次执行一个任务，然后先让浏览器完成后续的渲染操作，然后在空暇时间，再执行下一个任
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-08-26 15:56" pubdate>
+              2023-08-26
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/" class="category-chain-item">React</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/" class="category-chain-item">原理</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/React/">#React</a>
+            
+              <a href="/tags/%E8%B0%83%E5%BA%A6%E4%BB%BB%E5%8A%A1/">#调度任务</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/05.beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/" target="_self">
+          beginWork和render全流程
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/05.beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/" target="_self">
+        <div>
+          组件 A 触发 setState或者useState更新视图，既然 fiber是从 root 开始更新，那么如何找到对应的 A 并 rerender 的呢？ 组件类型 fiber 进行 beginWork就一定会进行 render吗？  1. state 更新源泉1.1 更新的最小单元虽然在 React V18 引入订阅外部数据源的 useMutableSource。但是在当前版本的 React
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-08-26 15:56" pubdate>
+              2023-08-26
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/" class="category-chain-item">React</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/" class="category-chain-item">原理</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/React/">#React</a>
+            
+              <a href="/tags/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/">#beginWork和render全流程</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/03.%E8%B0%83%E5%92%8C%E4%B8%8Efiber/" target="_self">
+          调和与fiber
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/03.%E8%B0%83%E5%92%8C%E4%B8%8Efiber/" target="_self">
+        <div>
+          什么是 fiber ？Fiber 架构解决了什么问题？ Fiber root 和 root fiber 有什么区别？ 不同 fiber 之间如何建立起关联的？ React 调和流程？ 两大阶段 commit 和 render 都做了哪些事情？ 什么是双缓冲树？有什么作用？ Fiber 深度遍历流程？ Fiber 的调和能中断吗？如何中断？  什么是 fiber？Fiber 的英文是 ‘纤维’，f
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-08-26 14:56" pubdate>
+              2023-08-26
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/" class="category-chain-item">React</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/" class="category-chain-item">原理</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/React/">#React</a>
+            
+              <a href="/tags/%E8%B0%83%E5%92%8C%E4%B8%8Efiber/">#调和与fiber</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/02.%E8%B0%83%E5%BA%A6%E4%B8%8E%E6%97%B6%E9%97%B4%E7%89%87/" target="_self">
+          调度与时间片
+        </a>
+      </h1>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/02.%E8%B0%83%E5%BA%A6%E4%B8%8E%E6%97%B6%E9%97%B4%E7%89%87/" target="_self">
+        <div>
+          1. React 调度浏览器的 GUI 渲染线程 和 JS 引擎线程是相互排斥的： 比如开发者用 js 写了一个遍历大量数据的循环，在执行 js 时候，会阻塞浏览器的渲染绘制，给用户直观的感受就是卡顿。 问题：  异步调度原理？ React 为什么不用 settimeout？ 说一说 React 的时间分片？ React 如果模拟 requestIdleCallback? 简述一下调度流程？  1
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-08-26 13:56" pubdate>
+              2023-08-26
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3 d-flex align-items-center">
+            <i class="iconfont icon-category"></i>
+            
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/" class="category-chain-item">React</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/" class="category-chain-item">原理</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/React/">#React</a>
+            
+              <a href="/tags/%E8%B0%83%E5%BA%A6%E4%B8%8E%E6%97%B6%E9%97%B4%E7%89%87/">#调度与时间片</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/08/01/web%E5%89%8D%E7%AB%AF/JavaScript/02.%E6%A8%A1%E5%9D%97%E5%8C%96/" target="_self">
           模块化
         </a>
@@ -441,83 +749,6 @@
               <a href="/tags/React/">#React</a>
             
               <a href="/tags/%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/">#事件原理</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/07/31/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/02-%E8%B0%83%E5%BA%A6%E4%B8%8E%E6%97%B6%E9%97%B4%E7%89%87/" target="_self">
-          调度与时间片
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/07/31/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/02-%E8%B0%83%E5%BA%A6%E4%B8%8E%E6%97%B6%E9%97%B4%E7%89%87/" target="_self">
-        <div>
-          1. React 调度浏览器的 GUI 渲染线程 和 JS 引擎线程是相互排斥的： 比如开发者用 js 写了一个遍历大量数据的循环，在执行 js 时候，会阻塞浏览器的渲染绘制，给用户直观的感受就是卡顿。 问题：  异步调度原理？ React 为什么不用 settimeout？ 说一说 React 的时间分片？ React 如果模拟 requestIdleCallback? 简述一下调度流程？  1
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-07-31 13:56" pubdate>
-              2023-07-31
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/" class="category-chain-item">React</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/" class="category-chain-item">原理</a>
-  
-  
-
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/React/">#React</a>
-            
-              <a href="/tags/%E8%B0%83%E5%BA%A6%E4%B8%8E%E6%97%B6%E9%97%B4%E7%89%87/">#调度与时间片</a>
             
           </div>
         
@@ -768,219 +999,6 @@
               <a href="/tags/Vue2/">#Vue2</a>
             
               <a href="/tags/vxe-table/">#vxe-table</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/Mixins%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88/" target="_self">
-          Mixins 实现方案
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/07/18/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/Mixins%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88/" target="_self">
-        <div>
-          什么是 MixinsVueJS的混入方式，把可复用的代码混入当前的代码里面。VueJS中使用Mixins 12345678910111213141516// define a mixin objectvar myMixin = &#123;	created: funtion() &#123;		this.hello()	&#125;,	methods: &#123;		hello: funtion
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-07-18 13:56" pubdate>
-              2023-07-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/" class="category-chain-item">微信小程序</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/">#微信小程序</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/uniapp/%E8%B8%A9%E5%9D%91/" target="_self">
-          踩坑
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/07/18/web%E5%89%8D%E7%AB%AF/uniapp/%E8%B8%A9%E5%9D%91/" target="_self">
-        <div>
-          组件upload 组件ios真机一次最多可选择9个文件 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484950515253545556575859606162636465666768697071727374757677787980818283848586878889909
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-07-18 13:56" pubdate>
-              2023-07-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/uniapp/" class="category-chain-item">uniapp</a>
-  
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/uniapp/">#uniapp</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/02-Component/" target="_self">
-          Component
-        </a>
-      </h1>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/02-Component/" target="_self">
-        <div>
-          Component在 React 世界中，一切皆组件，组件可分为类（Class）组件，和函数（Function）组件 12345678910111213141516171819202122232425// 类class textClass &#123;  sayHello=()=&gt;console.log(&#x27;hello, my name is alien&#x27;)&#125;//
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-07-18 13:56" pubdate>
-              2023-07-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3 d-flex align-items-center">
-            <i class="iconfont icon-category"></i>
-            
-
-<span class="category-chains">
-  
-  
-    
-      <span class="category-chain">
-        
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/" class="category-chain-item">React</a>
-  
-  
-    <span>></span>
-    
-  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/" class="category-chain-item">基础</a>
-  
-  
-
-  
-
-  
-
-      </span>
-    
-  
-</span>
-
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/React/">#React</a>
-            
-              <a href="/tags/Component/">#Component</a>
             
           </div>
         

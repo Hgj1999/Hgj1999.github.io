@@ -1,0 +1,2063 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Glimmering Stars">
+  <meta name="keywords" content="技术博客">
+  
+    <meta name="description" content="组件 A 触发 setState或者useState更新视图，既然 fiber是从 root 开始更新，那么如何找到对应的 A 并 rerender 的呢？ 组件类型 fiber 进行 beginWork就一定会进行 render吗？  1. state 更新源泉1.1 更新的最小单元虽然在 React V18 引入订阅外部数据源的 useMutableSource。但是在当前版本的 React">
+<meta property="og:type" content="article">
+<meta property="og:title" content="beginWork和render全流程">
+<meta property="og:url" content="https://hgj1999.github.io/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/05.beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:site_name" content="点点星光的技术博客">
+<meta property="og:description" content="组件 A 触发 setState或者useState更新视图，既然 fiber是从 root 开始更新，那么如何找到对应的 A 并 rerender 的呢？ 组件类型 fiber 进行 beginWork就一定会进行 render吗？  1. state 更新源泉1.1 更新的最小单元虽然在 React V18 引入订阅外部数据源的 useMutableSource。但是在当前版本的 React">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render01.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render02.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render03.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render04.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render05.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render06.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render07.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render08.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render09.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render10.png">
+<meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render11.png">
+<meta property="article:published_time" content="2023-08-26T07:56:15.000Z">
+<meta property="article:modified_time" content="2023-08-26T10:29:38.353Z">
+<meta property="article:author" content="Glimmering Stars">
+<meta property="article:tag" content="React">
+<meta property="article:tag" content="beginWork和render全流程">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render01.png">
+  
+  
+  
+  <title>beginWork和render全流程 - 点点星光的技术博客</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"hgj1999.github.io","root":"/","version":"1.9.4","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Glimmering Stars&#39; Blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="beginWork和render全流程"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-08-26 15:56" pubdate>
+          2023年8月26日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          12k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          102 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar category-bar" style="margin-right: -1rem">
+    
+
+
+
+
+
+<div class="category-list">
+  
+  
+    
+    
+    
+    <div class="category row nomargin-x">
+      <a class="category-item 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="web前端"
+        id="heading-348c88b2fce1b2a4dca21addc7a9b510" role="tab" data-toggle="collapse" href="#collapse-348c88b2fce1b2a4dca21addc7a9b510"
+        aria-expanded="true"
+      >
+        web前端
+        <span class="list-group-count">(44)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-348c88b2fce1b2a4dca21addc7a9b510"
+           role="tabpanel" aria-labelledby="heading-348c88b2fce1b2a4dca21addc7a9b510">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="CSS"
+        id="heading-2c56c360580420d293172f42d85dfbed" role="tab" data-toggle="collapse" href="#collapse-2c56c360580420d293172f42d85dfbed"
+        aria-expanded="false"
+      >
+        CSS
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-2c56c360580420d293172f42d85dfbed"
+           role="tabpanel" aria-labelledby="heading-2c56c360580420d293172f42d85dfbed">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/CSS/%E9%9A%8F%E8%AE%B0/" title="随记"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">随记</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="JavaScript"
+        id="heading-686155af75a60a0f6e9d80c1f7edd3e9" role="tab" data-toggle="collapse" href="#collapse-686155af75a60a0f6e9d80c1f7edd3e9"
+        aria-expanded="false"
+      >
+        JavaScript
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-686155af75a60a0f6e9d80c1f7edd3e9"
+           role="tabpanel" aria-labelledby="heading-686155af75a60a0f6e9d80c1f7edd3e9">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/JavaScript/01.%E7%B2%BE%E7%A1%AE%E5%9B%9B%E5%88%99%E8%BF%90%E7%AE%97/" title="精确四则运算"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">精确四则运算</span>
+        </a>
+      
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="底层原理"
+        id="heading-e971e343a0d37a51a1e03601a2c87f42" role="tab" data-toggle="collapse" href="#collapse-e971e343a0d37a51a1e03601a2c87f42"
+        aria-expanded="false"
+      >
+        底层原理
+        <span class="list-group-count">(4)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-e971e343a0d37a51a1e03601a2c87f42"
+           role="tabpanel" aria-labelledby="heading-e971e343a0d37a51a1e03601a2c87f42">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/28/web%E5%89%8D%E7%AB%AF/JavaScript/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/01.%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" title="类型转换"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">类型转换</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/28/web%E5%89%8D%E7%AB%AF/JavaScript/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/02.%E8%B0%83%E7%94%A8%E5%A0%86%E6%A0%88%E4%B8%8Ethis/" title="调用堆栈与this"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">调用堆栈与this</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/28/web%E5%89%8D%E7%AB%AF/JavaScript/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/03.%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" title="内存管理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">内存管理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/28/web%E5%89%8D%E7%AB%AF/JavaScript/%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86/04.%E4%BD%9C%E7%94%A8%E5%9F%9F%E9%93%BE%E5%92%8C%E9%97%AD%E5%8C%85/" title="作用域链和闭包"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">作用域链和闭包</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="模块化"
+        id="heading-f7fa5f4adef4e53f3d9aeed9e2cc860c" role="tab" data-toggle="collapse" href="#collapse-f7fa5f4adef4e53f3d9aeed9e2cc860c"
+        aria-expanded="false"
+      >
+        模块化
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-f7fa5f4adef4e53f3d9aeed9e2cc860c"
+           role="tabpanel" aria-labelledby="heading-f7fa5f4adef4e53f3d9aeed9e2cc860c">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/08/01/web%E5%89%8D%E7%AB%AF/JavaScript/02.%E6%A8%A1%E5%9D%97%E5%8C%96/" title="模块化"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">模块化</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="React"
+        id="heading-50ce2da63bea6a618e7578fa50690040" role="tab" data-toggle="collapse" href="#collapse-50ce2da63bea6a618e7578fa50690040"
+        aria-expanded="true"
+      >
+        React
+        <span class="list-group-count">(14)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-50ce2da63bea6a618e7578fa50690040"
+           role="tabpanel" aria-labelledby="heading-50ce2da63bea6a618e7578fa50690040">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem 
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="原理"
+        id="heading-b6724cffe9b1e39a5652a348831a4e0d" role="tab" data-toggle="collapse" href="#collapse-b6724cffe9b1e39a5652a348831a4e0d"
+        aria-expanded="true"
+      >
+        原理
+        <span class="list-group-count">(5)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse show" id="collapse-b6724cffe9b1e39a5652a348831a4e0d"
+           role="tabpanel" aria-labelledby="heading-b6724cffe9b1e39a5652a348831a4e0d">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/31/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/01.%E4%BA%8B%E4%BB%B6%E5%8E%9F%E7%90%86/" title="事件原理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">事件原理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/02.%E8%B0%83%E5%BA%A6%E4%B8%8E%E6%97%B6%E9%97%B4%E7%89%87/" title="调度与时间片"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">调度与时间片</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/03.%E8%B0%83%E5%92%8C%E4%B8%8Efiber/" title="调和与fiber"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">调和与fiber</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/04.%E8%B0%83%E5%BA%A6%E4%BB%BB%E5%8A%A1/" title="调度任务"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">调度任务</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/05.beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/" title="beginWork和render全流程"
+           class="list-group-item list-group-item-action
+           active">
+          <span class="category-post">beginWork和render全流程</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="基础"
+        id="heading-0796ba76b4b553687e5ffaeb78512ccb" role="tab" data-toggle="collapse" href="#collapse-0796ba76b4b553687e5ffaeb78512ccb"
+        aria-expanded="false"
+      >
+        基础
+        <span class="list-group-count">(9)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-0796ba76b4b553687e5ffaeb78512ccb"
+           role="tabpanel" aria-labelledby="heading-0796ba76b4b553687e5ffaeb78512ccb">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/01-JSX/" title="JSX"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">JSX</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/02-Component/" title="Component"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Component</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/03-State/" title="State"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">State</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/04-Props/" title="Props"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Props</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/05-lifeCycle/" title="lifeCycle"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">lifeCycle</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/06-Ref/" title="Ref"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Ref</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/07-Context/" title="Context"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Context</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/08-CSS%E6%A8%A1%E5%9D%97%E5%8C%96/" title="CSS模块化"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">CSS模块化</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/React/%E5%9F%BA%E7%A1%80/09-%E9%AB%98%E9%98%B6%E7%BB%84%E4%BB%B6/" title="高阶组件"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">高阶组件</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="TypeScript"
+        id="heading-558b544cf685f39d34e4903e39c38b67" role="tab" data-toggle="collapse" href="#collapse-558b544cf685f39d34e4903e39c38b67"
+        aria-expanded="false"
+      >
+        TypeScript
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-558b544cf685f39d34e4903e39c38b67"
+           role="tabpanel" aria-labelledby="heading-558b544cf685f39d34e4903e39c38b67">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/21/web%E5%89%8D%E7%AB%AF/TypeScript/%E5%9F%BA%E7%A1%80/" title="基础"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">基础</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Vue2"
+        id="heading-b5bc4fae52caba546fa469b33a1f7efd" role="tab" data-toggle="collapse" href="#collapse-b5bc4fae52caba546fa469b33a1f7efd"
+        aria-expanded="false"
+      >
+        Vue2
+        <span class="list-group-count">(8)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-b5bc4fae52caba546fa469b33a1f7efd"
+           role="tabpanel" aria-labelledby="heading-b5bc4fae52caba546fa469b33a1f7efd">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="原理"
+        id="heading-b6724cffe9b1e39a5652a348831a4e0d" role="tab" data-toggle="collapse" href="#collapse-b6724cffe9b1e39a5652a348831a4e0d"
+        aria-expanded="false"
+      >
+        原理
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-b6724cffe9b1e39a5652a348831a4e0d"
+           role="tabpanel" aria-labelledby="heading-b6724cffe9b1e39a5652a348831a4e0d">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/01.observe/" title="observe"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">observe</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/02.template/" title="template"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">template</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/03.init%20render/" title="init render"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">init render</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/04.update%20render/" title="update render"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">update render</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/05.watch/" title="watch"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">watch</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E5%8E%9F%E7%90%86/06.computed/" title="computed"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">computed</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="生态"
+        id="heading-2bbb08c8b90b98a98ee6940d899b794d" role="tab" data-toggle="collapse" href="#collapse-2bbb08c8b90b98a98ee6940d899b794d"
+        aria-expanded="false"
+      >
+        生态
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-2bbb08c8b90b98a98ee6940d899b794d"
+           role="tabpanel" aria-labelledby="heading-2bbb08c8b90b98a98ee6940d899b794d">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="vxe-table"
+        id="heading-7e0799eacd75b19d26626e298e9212bf" role="tab" data-toggle="collapse" href="#collapse-7e0799eacd75b19d26626e298e9212bf"
+        aria-expanded="false"
+      >
+        vxe-table
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-7e0799eacd75b19d26626e298e9212bf"
+           role="tabpanel" aria-labelledby="heading-7e0799eacd75b19d26626e298e9212bf">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue2/%E7%94%9F%E6%80%81/vxe-table/%E8%B8%A9%E5%9D%91/" title="踩坑"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">踩坑</span>
+        </a>
+      
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="drag"
+        id="heading-9fa45db736cfb8a6df80fcad7a79d7fd" role="tab" data-toggle="collapse" href="#collapse-9fa45db736cfb8a6df80fcad7a79d7fd"
+        aria-expanded="false"
+      >
+        drag
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-9fa45db736cfb8a6df80fcad7a79d7fd"
+           role="tabpanel" aria-labelledby="heading-9fa45db736cfb8a6df80fcad7a79d7fd">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="sortablejs"
+        id="heading-f1d4baa153c3b58c7ad2556baf21f37e" role="tab" data-toggle="collapse" href="#collapse-f1d4baa153c3b58c7ad2556baf21f37e"
+        aria-expanded="false"
+      >
+        sortablejs
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-f1d4baa153c3b58c7ad2556baf21f37e"
+           role="tabpanel" aria-labelledby="heading-f1d4baa153c3b58c7ad2556baf21f37e">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/Vue2/%E7%94%9F%E6%80%81/vxe-table/%E9%9B%86%E6%88%90sortablejs%E5%AE%9E%E7%8E%B0%E6%8B%96%E6%8B%BD%E5%8A%9F%E8%83%BD/" title="集成sortablejs实现拖拽功能"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">集成sortablejs实现拖拽功能</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="Vue3"
+        id="heading-79dcf464d3e1b41635e194883d0c939a" role="tab" data-toggle="collapse" href="#collapse-79dcf464d3e1b41635e194883d0c939a"
+        aria-expanded="false"
+      >
+        Vue3
+        <span class="list-group-count">(7)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-79dcf464d3e1b41635e194883d0c939a"
+           role="tabpanel" aria-labelledby="heading-79dcf464d3e1b41635e194883d0c939a">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="原理"
+        id="heading-b6724cffe9b1e39a5652a348831a4e0d" role="tab" data-toggle="collapse" href="#collapse-b6724cffe9b1e39a5652a348831a4e0d"
+        aria-expanded="false"
+      >
+        原理
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-b6724cffe9b1e39a5652a348831a4e0d"
+           role="tabpanel" aria-labelledby="heading-b6724cffe9b1e39a5652a348831a4e0d">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E5%8E%9F%E7%90%86/observe/" title="observe"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">observe</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="生态"
+        id="heading-2bbb08c8b90b98a98ee6940d899b794d" role="tab" data-toggle="collapse" href="#collapse-2bbb08c8b90b98a98ee6940d899b794d"
+        aria-expanded="false"
+      >
+        生态
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-2bbb08c8b90b98a98ee6940d899b794d"
+           role="tabpanel" aria-labelledby="heading-2bbb08c8b90b98a98ee6940d899b794d">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="nuxt3"
+        id="heading-fc69c1cad2d55a934383c957f4133484" role="tab" data-toggle="collapse" href="#collapse-fc69c1cad2d55a934383c957f4133484"
+        aria-expanded="false"
+      >
+        nuxt3
+        <span class="list-group-count">(6)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-fc69c1cad2d55a934383c957f4133484"
+           role="tabpanel" aria-labelledby="heading-fc69c1cad2d55a934383c957f4133484">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/01.%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2%E5%A4%84%E7%90%86/" title="错误页面处理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">错误页面处理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/02.%E9%94%99%E8%AF%AF%E6%97%A5%E5%BF%97%E8%AE%B0%E5%BD%95%E6%96%B9%E6%A1%88/" title="错误页面处理"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">错误页面处理</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/03.%E5%AF%BC%E8%88%AA%E6%A0%8F%E9%94%9A%E7%82%B9/" title="导航栏锚点"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">导航栏锚点</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/04.%E6%B7%BB%E5%8A%A0%E7%99%BE%E5%BA%A6%E7%BB%9F%E8%AE%A1%E4%BB%A3%E7%A0%81/" title="添加百度统计代码"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">添加百度统计代码</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/05.cdn%E6%96%B9%E6%A1%88/" title="cdn 方案"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">cdn 方案</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/Vue3/%E7%94%9F%E6%80%81/nuxt3/06.%E6%B7%BB%E5%8A%A0%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F/" title="添加环境变量"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">添加环境变量</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="uniapp"
+        id="heading-0094539787173fdbc36ecf1c1827193a" role="tab" data-toggle="collapse" href="#collapse-0094539787173fdbc36ecf1c1827193a"
+        aria-expanded="false"
+      >
+        uniapp
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-0094539787173fdbc36ecf1c1827193a"
+           role="tabpanel" aria-labelledby="heading-0094539787173fdbc36ecf1c1827193a">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/uniapp/%E8%B8%A9%E5%9D%91/" title="踩坑"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">踩坑</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="微信小程序"
+        id="heading-439845b85c0a405cebc2e738b0786f15" role="tab" data-toggle="collapse" href="#collapse-439845b85c0a405cebc2e738b0786f15"
+        aria-expanded="false"
+      >
+        微信小程序
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-439845b85c0a405cebc2e738b0786f15"
+           role="tabpanel" aria-labelledby="heading-439845b85c0a405cebc2e738b0786f15">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E8%B8%A9%E5%9D%91/" title="踩坑"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">踩坑</span>
+        </a>
+      
+    
+      
+      
+        <a href="/2023/07/18/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/Mixins%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%A1%88/" title="Mixins 实现方案"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">Mixins 实现方案</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="浏览器"
+        id="heading-912302cb020149c37f9642fbc9e42891" role="tab" data-toggle="collapse" href="#collapse-912302cb020149c37f9642fbc9e42891"
+        aria-expanded="false"
+      >
+        浏览器
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-912302cb020149c37f9642fbc9e42891"
+           role="tabpanel" aria-labelledby="heading-912302cb020149c37f9642fbc9e42891">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/04/26/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/01.%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%8Ejs/" title="浏览器与js"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">浏览器与js</span>
+        </a>
+      
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="滚动条"
+        id="heading-47f0022e8e7a23f5a332273686eef9a7" role="tab" data-toggle="collapse" href="#collapse-47f0022e8e7a23f5a332273686eef9a7"
+        aria-expanded="false"
+      >
+        滚动条
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-47f0022e8e7a23f5a332273686eef9a7"
+           role="tabpanel" aria-labelledby="heading-47f0022e8e7a23f5a332273686eef9a7">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/27/web%E5%89%8D%E7%AB%AF/%E6%B5%8F%E8%A7%88%E5%99%A8/02.%E6%BB%9A%E5%8A%A8%E6%9D%A1/" title="滚动条"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">滚动条</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="项目技巧"
+        id="heading-ec50b9dea63b6fd38b433e14854cc36a" role="tab" data-toggle="collapse" href="#collapse-ec50b9dea63b6fd38b433e14854cc36a"
+        aria-expanded="false"
+      >
+        项目技巧
+        <span class="list-group-count">(2)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-ec50b9dea63b6fd38b433e14854cc36a"
+           role="tabpanel" aria-labelledby="heading-ec50b9dea63b6fd38b433e14854cc36a">
+        
+        
+          
+          
+  <div class="category-post-list">
+    
+    
+  </div>
+
+          
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="用户登录状态"
+        id="heading-f8674457fa9cdaf3d5dabc71e9377947" role="tab" data-toggle="collapse" href="#collapse-f8674457fa9cdaf3d5dabc71e9377947"
+        aria-expanded="false"
+      >
+        用户登录状态
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-f8674457fa9cdaf3d5dabc71e9377947"
+           role="tabpanel" aria-labelledby="heading-f8674457fa9cdaf3d5dabc71e9377947">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/27/web%E5%89%8D%E7%AB%AF/%E9%A1%B9%E7%9B%AE%E6%8A%80%E5%B7%A7/01.%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E7%8A%B6%E6%80%81/" title="用户登录状态"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">用户登录状态</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+    
+    
+    
+    <div class="category-sub row nomargin-x">
+      <a class="category-subitem collapsed
+          list-group-item category-item-action col-10 col-md-11 col-xm-11" title="线上问题定位"
+        id="heading-5be97ad5d1e33465328a4d92907367e8" role="tab" data-toggle="collapse" href="#collapse-5be97ad5d1e33465328a4d92907367e8"
+        aria-expanded="false"
+      >
+        线上问题定位
+        <span class="list-group-count">(1)</span>
+        <i class="iconfont icon-arrowright"></i>
+      </a>
+      
+      <div class="category-collapse collapse " id="collapse-5be97ad5d1e33465328a4d92907367e8"
+           role="tabpanel" aria-labelledby="heading-5be97ad5d1e33465328a4d92907367e8">
+        
+        
+          
+  <div class="category-post-list">
+    
+    
+      
+      
+        <a href="/2023/07/31/web%E5%89%8D%E7%AB%AF/%E9%A1%B9%E7%9B%AE%E6%8A%80%E5%B7%A7/02.%E7%BA%BF%E4%B8%8A%E9%97%AE%E9%A2%98%E5%AE%9A%E4%BD%8D/" title="线上问题定位"
+           class="list-group-item list-group-item-action
+           ">
+          <span class="category-post">线上问题定位</span>
+        </a>
+      
+    
+  </div>
+
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+        
+      </div>
+    </div>
+  
+</div>
+
+
+  </aside>
+
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">beginWork和render全流程</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <ul>
+<li>组件 A 触发 <code>setState</code>或者<code>useState</code>更新视图，既然 <code>fiber</code>是从 root 开始更新，那么如何找到对应的 A 并 rerender 的呢？</li>
+<li>组件类型 fiber 进行 <code>beginWork</code>就一定会进行 <code>render</code>吗？</li>
+</ul>
+<h1 id="1-state-更新源泉"><a href="#1-state-更新源泉" class="headerlink" title="1. state 更新源泉"></a>1. state 更新源泉</h1><h2 id="1-1-更新的最小单元"><a href="#1-1-更新的最小单元" class="headerlink" title="1.1 更新的最小单元"></a>1.1 更新的最小单元</h2><p>虽然在 React V18 引入订阅外部数据源的 <code>useMutableSource</code>。但是在当前版本的 React 中，视图的更新基本都来源于内部 state 的改变。如果有一个组件 A，如果想要它更新，那么场景中有如下情况：</p>
+<ul>
+<li>组件本身改变 <code>state</code>。函数<code>useState</code>|<code>useReducer</code>，类组件 <code>setState</code> | <code>forceUpdate</code></li>
+<li><code>props</code>改变，由组件更新带来的子组件的更新。</li>
+<li><code>context</code>更新，并且该组件消费了当前 <code>context</code>。</li>
+</ul>
+<p>无论从哪种方式，本质上都是 state 的变化。</p>
+<ul>
+<li>props 改变来源于父级组件的 state 变化。</li>
+<li>context 变化来源于<code>Provider</code>中 value 变化，而 value 一般情况下也是 state 或者是 state 衍生产物。</li>
+</ul>
+<p><code>state</code> 改变是在组件对应的 fiber 单位上的，<code>function Component</code>或者 <code>Class Component</code>也是两种不同的 fiber 类型，而且 React 底层对它们的处理逻辑也是不同的：</p>
+<ul>
+<li>更新类组件用的是 <code>updateClassComponent</code>，它做的事情是初始化时候实例化类组件，更新的话直接调用 render 得到新的 <code>children</code>；</li>
+<li>更新函数组件用的是 <code>updateFunctionComponent</code>，里面调用 <code>renderWithHooks</code>执行函数组件并依次调用 <code>hook</code>。</li>
+</ul>
+<p>那么在整个 <code>React</code>系统中，能够更新 state 的基本上都在组件层面，换句话说只有组件才能发出更新，比如 <code>div</code>元素 hostComponent 类型的 fiber，它是无法独立的自我更新的，只能依赖于父类的组件更新 state，但是在调和阶段，他也会作为一个任务单元进入到 workLoop 中：</p>
+<ul>
+<li><strong>fiber 是调和过程中的最小单元，每一个需要调和的 fiber 都会进入 workLoop 中。</strong></li>
+<li><strong>而组件是最小的更新单元，React 的更新源于数据层 state 的变化。</strong></li>
+</ul>
+<h2 id="1-2-beginWork-更新源泉"><a href="#1-2-beginWork-更新源泉" class="headerlink" title="1.2 beginWork 更新源泉"></a>1.2 beginWork 更新源泉</h2><p>类组件在 render 阶段的一个重要作用就是产生新的 children，也就是我们常说的 <code>rerender</code>。只有产生新的 children，接下来才能深度遍历 children，改变视图。每一个需要调和的 fiber 都要经历一个过程叫做 beginWork，在 beginWork 流程中将执行上述各种 fiber 的更新函数。</p>
+<p>那么对于组件类型 fiber：进入到 workLoop 中，那么一定会 <code>rerender</code>吗？</p>
+<p>答案是否定的</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs react">// 子组件 2<br>function Child2() &#123;<br>  return &lt;div&gt;子组件 2&lt;/div&gt;<br>&#125;<br>// 子组件 1<br>function Child1() &#123;<br>  const [num, setNumber] = React.useState(0)<br>  return &lt;div&gt;<br>  	子组件 &#123;num&#125;<br>    &lt;button onClick=&#123;() =&gt; setNumber(num + 1)&#125;&gt;按钮1&lt;/button&gt;<br>  &lt;/div&gt;<br>&#125;<br>// 父组件<br>export default function Index() &#123;<br>  const [num, setNumber] = React.useState(0)<br>  return &lt;div&gt;<br>  	&lt;p&gt;父组件&#123;num&#125;&lt;/p&gt;<br>    &lt;Child1 /&gt;<br>    &lt;Child2 /&gt;<br>    &lt;button onClick=&#123;() =&gt; setNumber(num+1)&#125;&gt;按钮 2&lt;/button&gt;<br>  &lt;/div&gt;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>场景一</strong>：如上 demo 中，当点击 <code>Child1</code>的 按钮1 的时候，Child1 会渲染，那么 Child1 自然会进入到 <code>beginWork</code>流程中：</p>
+<ul>
+<li>父组件 <code>Index</code>没有更新，会 rerender 吗？ 那么有会进入 <code>beginWork</code>流程吗？</li>
+<li><code>Child2</code>会进入<code>beginWork</code>流程吗？</li>
+<li>如果<code>Index</code>会<code>beginWork</code>，那么 React 从 Root fiber 开始调和的时候，是如何找到更新的事发点 Index 的呢？</li>
+</ul>
+<p><strong>场景二</strong>：在如上 demo 中，当点击 Index 中的 <strong>按钮2</strong> 的时候：</p>
+<ul>
+<li><code>Index</code>因为本身的 <code>state</code>改变会更新，那么 <code>Child1</code>和<code>Child2</code>为什么会跟着更新。</li>
+</ul>
+<p>开始以一次更新开始，分析调和过程中 beginWork 流程。</p>
+<p>在 v16 版本，任务的优先级用 expirationTime 表示，在 v17 版本被 lane 取缔。</p>
+<ul>
+<li><strong>lane</strong>：更新优先级。（在一次更新任务中，将赋予更新的 fiber 的一个更新优先级 lane）</li>
+<li><strong>childLeanes</strong>：<code>children</code>中更新优先级。（如果当前 fiber 的 child 中有高优先级任务，那么当前 fiber 的 childLanes 等于当前优先级）。</li>
+</ul>
+<h1 id="2-起源：从-state-改变到-scheduleUpdateOnFiber"><a href="#2-起源：从-state-改变到-scheduleUpdateOnFiber" class="headerlink" title="2. 起源：从 state 改变到 scheduleUpdateOnFiber"></a>2. 起源：从 state 改变到 scheduleUpdateOnFiber</h1><p>更新是以 <strong>组件</strong>为粒度，那么调用 <code>useState</code>或者是<code>setState</code>接下来会发生什么呢？</p>
+<p><strong>类组件 setState 更新</strong></p>
+<blockquote>
+<p>react-reconciler&#x2F;src&#x2F;ReactFiberClassComponent.new.js -&gt; classComponentUpdater</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">dispatchReducerAction</span>(<span class="hljs-params">fiber, queue,action</span>) &#123;<br>  <span class="hljs-keyword">const</span> lane = <span class="hljs-title function_">requestUpdateLane</span>(fiber);<br>  <span class="hljs-title function_">scheduleUpdateOnFiber</span>(fiber, lane, eventTime);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>组件更新的本质就是：</p>
+<ul>
+<li>创建一个任务优先级 lane。</li>
+<li>然后进行 scheduleUpdateOnFiber。这个 scheduleUpdateOnFiber 就是整个 React 更新任务的开始。</li>
+</ul>
+<h2 id="2-1-scheduleUpdateOnFiber-开始更新-fiber"><a href="#2-1-scheduleUpdateOnFiber-开始更新-fiber" class="headerlink" title="2.1 scheduleUpdateOnFiber 开始更新 fiber"></a>2.1 scheduleUpdateOnFiber 开始更新 fiber</h2><blockquote>
+<p>react-reconciler&#x2F;src&#x2F;ReactFiberWorkLoop.new.js -&gt; scheduleUpdateOnFiber</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">scheduleUpdateOnFiber</span> (fiber, lane) &#123;<br>  <span class="hljs-comment">// 递归向上标记更新优先级</span><br>  <span class="hljs-keyword">const</span> root = <span class="hljs-title function_">markUpdateLaneFromFiberToRoot</span>(fiber, lane);<br>  <span class="hljs-keyword">if</span>(root === <span class="hljs-literal">null</span>) <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;<br>  <span class="hljs-comment">// 如果当前 root 确定更新，那么会执行 ensureRootIsScheduled</span><br>  <span class="hljs-title function_">ensureRootIsScheduled</span>(root, eventTime);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>scheduleUpdateOnFiber 主要做了两件事：</p>
+<ul>
+<li>通过当前的更新优先级 lane，把当前 fiber 到 rootFiber 的父级链表上的所有优先级都给更新了。</li>
+<li>如果当前 fiber 确定更新，那么会调用 ensureRootIsScheduled。</li>
+</ul>
+<p><strong>那么 markUpdateLaneFromFiberToRoot 如果标记优先级呢？</strong></p>
+<blockquote>
+<p>react-reconciler&#x2F;src&#x2F;ReactFiberWorkLoop.new.js -&gt; markUpdateLaneFromFiberToRoot</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> &#123;<span class="hljs-type">*</span>&#125; sourceFiber 发生 state 变化的fiber ，比如组件 A 触发了 useState ，那么组件 A 对应的 fiber 就是 sourceFiber</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> &#123;<span class="hljs-type">*</span>&#125; lane        产生的更新优先级</span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">markUpdateLaneFromFiberToRoot</span>(<span class="hljs-params">sourceFiber, lane</span>) &#123;<br>  <span class="hljs-comment">// 更新当前 fiber 上</span><br>  sourceFiber.<span class="hljs-property">lanes</span> = <span class="hljs-title function_">mergeLanes</span>(sourceFiber.<span class="hljs-property">lanes</span>, lane);<br>  <span class="hljs-comment">// 更新缓存树上的 lanes</span><br>  <span class="hljs-keyword">let</span> alternate = sourceFiber.<span class="hljs-property">alternate</span>;<br>  <span class="hljs-keyword">if</span> (alternate !== <span class="hljs-literal">null</span>) alternate.<span class="hljs-property">lanes</span> = <span class="hljs-title function_">mergeLanges</span>(alternate.<span class="hljs-property">lanes</span>, lane);<br>  <span class="hljs-comment">// 当前更新的 fiber</span><br>  <span class="hljs-keyword">let</span> node = sourceFiber;<br>  <span class="hljs-keyword">let</span> parent = sourceFiber.<span class="hljs-property">return</span>;<br>  <span class="hljs-keyword">while</span>(parent !== <span class="hljs-literal">null</span>) &#123;<br>    <span class="hljs-comment">// <span class="hljs-doctag">TODO:</span> 更新 childLanes 字段</span><br>    parent.<span class="hljs-property">childLanes</span> = <span class="hljs-title function_">mergeLanes</span>(parent.<span class="hljs-property">childLanes</span>, lane);<br>    <span class="hljs-keyword">if</span> (alternate !== <span class="hljs-literal">null</span>) &#123;<br>      alternate.<span class="hljs-property">childLanes</span> = <span class="hljs-title function_">mergeLanes</span>(alternate.<span class="hljs-property">childLanes</span>, lane);<br>    &#125;<br>    <span class="hljs-comment">// 递归遍历更新</span><br>    node = parent;<br>    parent = parent.<span class="hljs-property">return</span>;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>markUpdateLaneFromFiberToRoot 做的事很重要。</p>
+<ul>
+<li>首先会更新当前 fiber 上的更新优先级。fiber 采用 双缓冲树，所有还要更新当前 fiber 的缓冲树 <code>alternate</code>上的优先级。</li>
+<li>然后会递归向上把父级连上的 childLanes 都更新，更新成当前的任务优先级。</li>
+</ul>
+<p>为什么向上递归更新父级的 childLanes？</p>
+<ul>
+<li>所有的 fiber 是通过一棵 fiber 树关联到一起的，如果组件 A 发生一次更新，React 是从 root 开始遍历更新 fiber 树。</li>
+<li>那么更新过程中需要深度遍历整个 fiber 树吗？当然也不是，那么只有一个组件更新，所有的 fiber 节点都调和无疑是性能上的浪费。</li>
+<li>既然要从头更新，又不想调和整个 fiber 树，那么如何找到更新的组件 A 呢？这个时候 <code>childLanes</code>就派上用场了，如果 A 发生了更新，那么向上递归更新父级链的<code>childLanes</code>，接下来从 Root Fiber 向下调和的时候，发现 childLanes 等于当前更新优先级<code>updateLanes</code>，那么说明它的 child 链上有新的更新任务，则会继续向下调和，反之退出调和流程。</li>
+</ul>
+<p>这样就知道了：</p>
+<p>如果 Index 会 beginWork，React 从 Root fiber 开始调和的时候，是如何找到更新的事发点 Index 的。：</p>
+<p><strong>Root Fiber 是通过 childLanes 逐渐向下调和找到需要更新的组件的。</strong></p>
+<p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render01.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>整个 fiber 树 调和流程。</p>
+<ul>
+<li>第一阶段是发生更新，那么产生一个更新优先级 <code>lane</code>。</li>
+<li>第二阶段向上标记 childLanes 过程。</li>
+<li>第三阶段是向下调和过程，为什么 A 会被调和，原因是 A 和 B 是同级，如果父级元素调和，并且向下调和，那么父级的第一级子链上的 fiber 都会进入调和流程。从 fiber 关系上看，Root 先调和的是 child 指针上的 A，然后 A 会退出向下调和，接下来才是 sibling B，接下来 B 会向下调和，通过 childLanes 找到当事人 F，然后 F 会触发 render 更新。这也就解决了Child2 的调和问题。</li>
+</ul>
+<p>通过上述我们知道了如何找到 F 并执行 render 的，还有一个问题，就是 B，E 会向下调和，如果它们是组件，那么会 render 吗？答案是否定的，要记住的是 <strong>调和过程并非 render 过程</strong>，调和过程有可能会触发 render 函数，也有可能只是继续向下调和，而本身不会执行 render。</p>
+<p>既然知道了如何去更新 childLanes，以及更新 childLanes 的意义，我们接着向下分析流程。在 scheduleUpdateOnFiber 中，最后会调用 <code>ensureRootIsScheduled</code>，那么它的作用是什么呢？</p>
+<ul>
+<li>对于 <code>legacy sync</code>模式最后的更新任务是<code>performSyncWorkOnRoot</code>。</li>
+<li>对于<code>Concurrent</code>模式最后的更新任务是<code>performConcurrentWorkOnRoot</code>。</li>
+</ul>
+<p>组件 beginWork 更新流程，所以这里主要以 legacy 模式为主，所以跟着 performSyncWorkOnRoot 流程往下看：</p>
+<blockquote>
+<p>react-reconciler&#x2F;src&#x2F;ReactFiberWorkLoop.new.js -&gt; performSyncWorkOnRoot</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">performSyncWorkOnRoot</span>(<span class="hljs-params">root</span>) &#123;<br>  <span class="hljs-comment">// render 阶段</span><br>  <span class="hljs-keyword">let</span> exitStatus = <span class="hljs-title function_">renderRootSync</span>(root, lanes);<br>  <span class="hljs-comment">// commit 阶段</span><br>  <span class="hljs-title function_">commitRoot</span>(root);<br>  <span class="hljs-comment">// 如果有其他的等待中的任务，那么继续更新</span><br>  <span class="hljs-title function_">ensureRootIsScheduled</span>(root, <span class="hljs-title function_">now</span>());<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>调和的两大阶段 <code>render</code>和<code>commit</code>都在这个函数中执行。</p>
+<ul>
+<li><code>renderRootSync</code>代表 render 阶段</li>
+<li><code>commitRoot</code>代表 commit 阶段</li>
+<li>当 render 和 commit 阶段执行之后，如果有其他的等待中的任务，那么继续执行调度任务。</li>
+</ul>
+<p>到此为止，一次更新调度任务的初始化工作完成。开始正式进入调和阶段。</p>
+<p>流程图：</p>
+<p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render02.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<h1 id="3-探索：从-workLoop-到-beginWork"><a href="#3-探索：从-workLoop-到-beginWork" class="headerlink" title="3. 探索：从 workLoop 到 beginWork"></a>3. 探索：从 workLoop 到 beginWork</h1><p>beginWork 和组件更新流程，这些主要都发生在 <code>render</code>阶段，所以下面将围绕 <code>renderRootSync</code>展开。</p>
+<blockquote>
+<p>react-reconciler&#x2F;src&#x2F;ReactFiberWorkLoop.new.js -&gt; renderRootSync</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">renderRootSync</span>(<span class="hljs-params">root, lanes</span>) &#123;<br>  <span class="hljs-title function_">workLoopSync</span>();<br>  <span class="hljs-comment">// workLoop 完毕后，证明所有节点都遍历完毕，那么重置状态，进入 commit 阶段</span><br>  workInProgressRoot = <span class="hljs-literal">null</span>;<br>  workInProgressRootRenderLanes = <span class="hljs-title class_">NoLanes</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>renderRootSync 核心功能：</p>
+<ul>
+<li>执行 <code>workLoopSync</code>。</li>
+<li><code>workLoop</code>完毕后，证明所有节点都遍历完毕，那么重置状态，进入 <code>commit</code>阶段。</li>
+</ul>
+<p><code>workLoopSync</code>在整个 render 流程中充当的角色非常重要，可以把<code>workLoopSync</code>当作一个循环运作的加工器，每一个需要调和的 fiber 可以当作一个零件，每一个零件都需要进入加工器，如果没有待加工的零件，那么加工器才停止运转。</p>
+<blockquote>
+<p>react-reconciler&#x2F;src&#x2F;ReactFiberWorkLoop.new.js -&gt; workLoopSync</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">workLoopSync</span>(<span class="hljs-params"></span>) &#123;<br>  <span class="hljs-comment">// 循环执行 performUnitOfwork，一直到 workInProgress 为空</span><br>  <span class="hljs-keyword">while</span> (workInProgress !== <span class="hljs-literal">null</span>) &#123;<br>    <span class="hljs-title function_">performUnitOfWork</span>(workInProgress);<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>如上只要 <code>workInProgress</code>不为<code>null</code>（还有需要调和的 fiber），那么 workLoopSync 会循环调用 performUnitOfWork。</li>
+</ul>
+<p>当 Concurrent 模式下面会通过 <code>shouldYield</code>，来判断有没有过期的任务，有过期任务，会中断 workLoop，那么也就是说明了 <strong>render 阶段是可以被打断的。</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">while</span> (workInProgress !== <span class="hljs-literal">null</span> &amp;&amp; !<span class="hljs-title function_">shouldYield</span>()) &#123;<br>  <span class="hljs-title function_">performUnitOfWork</span>(workInProgress);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>fiber 树是深度优先遍历得到的，在遍历完父节点，接下来就会遍历子节点，在这其中，每一个调和的 fiber 都将作为 <code>workInProgress</code> 进行调和更新。</p>
+<p>无论什么模式，workLoop 的执行单元都是 fiber。而且更新单元的函数叫做 performUnitOfWork。</p>
+<blockquote>
+<p>react-reconciler&#x2F;src&#x2F;ReactFiberWorkLoop.new.js -&gt; performUnitOfWork</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">performUnitOfWork</span>(<span class="hljs-params">unitOfWork</span>) &#123;<br>  <span class="hljs-keyword">const</span> current = unitOfWork.<span class="hljs-property">alternate</span>;<br>  <span class="hljs-keyword">let</span> next = <span class="hljs-title function_">beginWork</span>(current, unitOfWork, subtreeRenderLanes);<br>  unitOfWork.<span class="hljs-property">memoizedProps</span> = unitOfWork.<span class="hljs-property">pendingProps</span>;<br>  <span class="hljs-keyword">if</span> (next === <span class="hljs-literal">null</span>) &#123;<br>    <span class="hljs-title function_">completeUnitOfWork</span>(unitOfWork);<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    workInProgress = next;<br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>completeUnitOfWork 是向上归并的流程。以组件更新流程为目的，研究 beginWork 流程。</p>
+<p>在介绍 beginWork 之前先来看几个场景：</p>
+<p>假设有一个组件 fiber 链。我们在这个 fiber 链上暂且无视其他类型的 fiber，只保留组件类型的 fiber。结构如下：</p>
+<p>root Fiber – child –&gt; A 组件 – child –&gt; B 组件 – child –&gt; C 组件。</p>
+<p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render03.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>主角就是 <strong>组件B</strong>，以组件 B 为参考，来看一下 React 如何调和。那么一次更新就可能有三种场景：</p>
+<p>-<br>场景一：<strong>更新 A 组件 state</strong>，那么 A 触发更新，那么如果 B，C 没有做渲染控制处理（比如 memo PureComponent），那么更新会波动到 B，C，那么 A，B，C 都会 rerender。</p>
+<p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render04.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>-<br>场景二：<strong>当更新 B 组件</strong>，那么组件 A fiber 会被标记，然后 A 会调和，但是不会 rerender；组件 B 是当事人，既会进入调和，也会 rerender；组件 C 收到 父组件 B 的影响，会 rerender。</p>
+<p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render05.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>-<br>场景三：<strong>当更新 C 组件</strong>，那么 A，B 会进入调和流程，但是不会 rerender，C 是当事人，会调和并 rerender。</p>
+<p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render06.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>如上场景本质上都在 <code>beginWork</code> 中进行的，这个 beginWork 是如何处理这些逻辑的。</p>
+<h1 id="4-揭秘：从-beginWork-到组件更新全流程"><a href="#4-揭秘：从-beginWork-到组件更新全流程" class="headerlink" title="4. 揭秘：从 beginWork 到组件更新全流程"></a>4. 揭秘：从 beginWork 到组件更新全流程</h1><h2 id="4-1-beginWork-更新的调度栈"><a href="#4-1-beginWork-更新的调度栈" class="headerlink" title="4.1 beginWork 更新的调度栈"></a>4.1 beginWork 更新的调度栈</h2><blockquote>
+<p>react-reconciler&#x2F;src&#x2F;ReactFiberBeginWork.new.js -&gt; beginWork</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">/**</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> &#123;<span class="hljs-type">*</span>&#125; current         current 树 fiber </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> &#123;<span class="hljs-type">*</span>&#125; workInProgress  workInProgress 树 fiber </span><br><span class="hljs-comment"> * <span class="hljs-doctag">@param</span> &#123;<span class="hljs-type">*</span>&#125; renderLanes     当前的 render 优先级</span><br><span class="hljs-comment"> * <span class="hljs-doctag">@returns</span> </span><br><span class="hljs-comment"> */</span><br><span class="hljs-keyword">function</span> <span class="hljs-title function_">beginWork</span>(<span class="hljs-params">current, workInProgress, renderLanes</span>) &#123;<br>  <span class="hljs-comment">/* -------------------第一部分-------------------- */</span><br>  <span class="hljs-keyword">if</span> (current !== <span class="hljs-literal">null</span>) &#123;<br>    <span class="hljs-comment">// 更新流程</span><br>    <span class="hljs-comment">// current 树上上一次渲染后的 props</span><br>    <span class="hljs-keyword">const</span> oldProps = current.<span class="hljs-property">memoizedProps</span>;<br>    <span class="hljs-comment">// workInProgress 树上这一次更新的 props</span><br>    <span class="hljs-keyword">const</span> newProps = workInProgress.<span class="hljs-property">pendingProps</span>;<br>    <br>    <span class="hljs-keyword">if</span> (oldProps !== newProps || <span class="hljs-title function_">hasLegacyContextChanged</span>()) &#123;<br>      didReceiveUpdate = <span class="hljs-literal">true</span>;<br>    &#125; <span class="hljs-keyword">else</span> &#123;<br>      <span class="hljs-comment">// props 和 context 没有发生变化，检查是否更新来自自身 context 改变</span><br>      <span class="hljs-keyword">const</span> hasScheduledUpdateOrContext = <span class="hljs-title function_">checkScheduledUpdateOrContext</span>(current, rederLanes)<br>      <span class="hljs-keyword">if</span> (!hasScheduledUpdateOrContext) &#123;<br>        didReceiveUpdate = <span class="hljs-literal">false</span>;<br>        <span class="hljs-keyword">return</span> <span class="hljs-title function_">attemptEarlyBailoutIfNoScheduledUpdate</span>(current, workInProgress, renderLanes)<br>      &#125;<br>      <span class="hljs-comment">// 这里省略了一些判断逻辑</span><br>      didReceiveUpdate = <span class="hljs-literal">false</span>;<br>    &#125;<br>  &#125; <span class="hljs-keyword">else</span> &#123;<br>    didReceiveUpdate = <span class="hljs-literal">false</span>;<br>  &#125;<br>  <span class="hljs-comment">/* -------------------第二部分-------------------- */</span><br>  <span class="hljs-comment">/* <span class="hljs-doctag">TODO:</span> 走到这里流程会被调和 | 更新，比如函数执行会执行，类组件会执行 render 。 */</span> <br>  <span class="hljs-keyword">switch</span>(workInProgress.<span class="hljs-property">tag</span>) &#123;<br>      <span class="hljs-comment">// 函数组件的情况</span><br>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">FunctionComponent</span>: &#123;<br>      <span class="hljs-keyword">return</span> <span class="hljs-title function_">updateFunctionComponent</span>(current, workInProgress, <span class="hljs-title class_">Component</span>, resolvedProps, renderLanes) <br>    &#125;<br>    <span class="hljs-comment">// 类组件的情况</span><br>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">ClassComponent</span>: &#123;<br>      <span class="hljs-keyword">return</span> <span class="hljs-title function_">updateClassComponent</span>(current, workInProgress, <span class="hljs-title class_">Component</span>, resolvedProps, renderLanes)<br>    &#125;<br>    <span class="hljs-comment">// 类组件的情况</span><br>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">ClassComponent</span>: &#123;<br>      <span class="hljs-keyword">return</span> <span class="hljs-title function_">updateClassComponent</span>(current, workInProgress, <span class="hljs-title class_">Component</span>, resolbedProps, renderLanes)<br>    &#125;<br>    <span class="hljs-comment">// 元素类型 fiebr &lt;div&gt;,&lt;span&gt;</span><br>    <span class="hljs-keyword">case</span> <span class="hljs-title class_">HostComponent</span>: &#123;<br>      <span class="hljs-keyword">return</span> <span class="hljs-title function_">updateHostComponent</span>(current, workInProgress, renderLanes)<br>    &#125;<br>    <span class="hljs-comment">// 其他 fiber 情况</span><br>  &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>如上就是 <code>beginWork</code>的全流程，整个流程分为两个阶段。</p>
+<h2 id="4-2-第一阶段"><a href="#4-2-第一阶段" class="headerlink" title="4.2 第一阶段"></a>4.2 第一阶段</h2><p>第一部分，这部分非常重要就是判断更新情况的，上面的三种常见都可以在第一阶段进行判断处理。<code>didReceiveUpdate</code>变量的意义：</p>
+<ul>
+<li><p>didReceiveUpdate：这个变量主要证明当前更新是否来源于父级的更新，那么自身并没有更新。比如更新 B 组件，那么 C 组件也会跟着更新，这个情况下 <code>didReceiveUpdate = true</code>。</p>
+</li>
+<li><p>首先通过 <code>current !== null</code>来判断当前 fiber 是否创建过，如果第一次 mounted，那么 current 为 null，而第一阶段主要针对更新的情况。如果初始化，那么直接跳过第一阶段，<strong>到第二阶段</strong></p>
+</li>
+<li><p>如果是更新流程。那么判断 old Props &#x3D;&#x3D;&#x3D; newProps（源码中还判断了老版本 context 是否变化），那么两者相等。一般会有以下几种情况：</p>
+<ul>
+<li><strong>情况一</strong>：如果 C 组件更新，那么 B 组件被标记 ChildLanes 会进入到 beginWork 调和阶段，但是 B 组件本身 props 不会发生变化。</li>
+<li><strong>情况二</strong>：通过 useMemo 等方式缓存了 React element 元素</li>
+<li><strong>情况三</strong>：就是更新发生在当前组件本身，比如 B 组件发生更新，但是 B 组件的 props 并没有发生变化，所以也会走到这个流程上来。</li>
+</ul>
+</li>
+<li><p>反之如果两者不相等，证明父级 fiber 重新 rerender 导致了 props 改变，此时 didReceiveUpdate &#x3D; true，那么第一阶段完成，<strong>进入第二阶段</strong>。</p>
+</li>
+</ul>
+<p><strong>新老 props 相等</strong>，会有一些处理逻辑：第一个就是调用 <code>checkScheduledUpdateOrContext</code></p>
+<p><strong>checkScheduledUpdateOrContext</strong></p>
+<blockquote>
+<p>react-reconciler&#x2F;src&#x2F;ReactFiberBeginWork.new.js -&gt; checkShceduledUpdateOrContext</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">checkScheduledUpdateOrContext</span>(<span class="hljs-params">current, renderLanes</span>) &#123;<br>  <span class="hljs-keyword">const</span> updateLanes = current.<span class="hljs-property">lanes</span>;<br>  <span class="hljs-comment">// 这种情况说明当前更新</span><br>  <span class="hljs-keyword">if</span> (<span class="hljs-title function_">includesSomeLane</span>(updateLanes, renderLanes)) &#123;<br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>  &#125;<br>  <span class="hljs-comment">// 如果该 fiber 消费了 context，并且 context 发生了改变</span><br>  <span class="hljs-keyword">if</span> (enableLazyContextPropagation) &#123;<br>    <span class="hljs-keyword">const</span> dependencies = current.<span class="hljs-property">dependencies</span>;<br>    <span class="hljs-keyword">if</span> (dependencies !== <span class="hljs-literal">null</span> &amp;&amp; <span class="hljs-title function_">checkIfContextChanged</span>(dependencies)) &#123;<br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>;<br>    &#125;<br>  &#125;<br>  <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>当新老 props 相等情况，首先会检查当前 fiber 的 <code>lane</code> 是否等于 <code>updateLanes</code>，如果相等，那么证明更新来源当前 fiber，比如 B 组件发生更新，那么会走这里（情况三）。当然期间也会判断是否有消费 <code>context</code> 并发生了变化。最后返回状态 hasScheduledUpdateOrContext 。</li>
+</ul>
+<p>如果 <code>hasScheduledUpdateOrContext</code> 为 false，证明当前组件没有更新，也没有 context 上的变化，那么还有一种情况就是 child 可能有更新，但是当前 fiber 不需要更新（情况一）。那么会直接返回 <code>attemptEarlyBailoutIfNoScheduledUpdate</code> ，<strong>退出第二阶段</strong></p>
+<p>attemptEarlyBailoutIfNoScheduledUpdate 这个函数会处理部分 Context 逻辑，但是最重要的是调用了 <strong><code>bailoutOnAlreadyFinishedWork</code></strong> 。</p>
+<blockquote>
+<p>react-reconciler&#x2F;src&#x2F;ReactFiberBeginWork.new.js -&gt; bailoutOnAlreadyFinishedWork</p>
+</blockquote>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">function</span> <span class="hljs-title function_">bailoutOnAlreadyFinishedWork</span>(<span class="hljs-params">current,workInProgress,renderLanes</span>)&#123;<br>     <span class="hljs-comment">/* 如果 children 没有高优先级的任务，说明所有的 child 都没有更新，那么直接 返回，child 也不会被调和  */</span><br>    <span class="hljs-keyword">if</span> (!<span class="hljs-title function_">includesSomeLane</span>(renderLanes, workInProgress.<span class="hljs-property">childLanes</span>)) &#123;<br>      <span class="hljs-comment">/* 这里做了流程简化 */</span><br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span> <br>    &#125;<br>    <span class="hljs-comment">/* 当前fiber没有更新。但是它的children 需要更新。  */</span><br>    <span class="hljs-title function_">cloneChildFibers</span>(current, workInProgress);<br>    <span class="hljs-keyword">return</span> workInProgress.<span class="hljs-property">child</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>bailoutOnAlreadyFinishedWork 流程非常重要。它主要做了两件事。</p>
+<ul>
+<li>首先通过 includesSomeLane 判断 childLanes 是否是高优先级任务，如果不是，那么所有子孙 fiber 都不需要调和 ，那么直接返回 null，child 也不会被调和。</li>
+<li>如果 childLanes 优先级高，那么证明 child 需要被调和，但是当前组件不需要，所以会克隆一下 children，返回 children ，那么本身不会 <code>rerender</code>。</li>
+</ul>
+<p>到这里第一阶段完成了，完成了组件更新流程的所有情况。第一阶段完成会进入到更新的第二阶段。</p>
+<h2 id="4-3-第二阶段"><a href="#4-3-第二阶段" class="headerlink" title="4.3 第二阶段"></a>4.3 第二阶段</h2><p>从 beginWork 的源码中可以看到，第二阶段就是更新 fiber，比如是函数组件，就会调用 <code>updateFunctionComponent</code>，类组件就调用 <code>updateClassComponent</code>，然后进行 rerender 了。</p>
+<p>以上述中的 <strong>组件B</strong>为例子，强化以下更新流程。</p>
+<p><strong>场景一</strong>：当更新 A 的时候，那么 A 组件的 fiber 会进入调和流程，会执行 render 形成新的组件 B 对应的 element 元素，接下来调和 B，因为 B 的 newProps 不等于 oldProps，所以会 didReceiveUpdate &#x3D; true，然后更新组件，也会触发 render。（这里都是默认没有渲染控制的场景，比如 memo PureComponent 等），这样也就解决了文章开头的问题四。</p>
+<p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render07.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p><strong>场景二</strong>：当更新 B 的时候，那么 A 组件会标记 childLanes，所以 A 会被调和，但是不会 render，然后到了主角 B，B 由于新老 props 相等，所以会 <code>checkScheduledUpdateOrContext</code>流程，判断 lane 等于 renderLanes，检查到 lane 等于 renderLane，所以会执行更新，触发 render。C 组件也跟着更新。</p>
+<p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render08.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p><strong>场景三</strong>：当更新 C 的时候，那么 A 和 B 组件会标记 childLanes，所以 A 和 B 会被调和，但是不会更新，然后到 C，C 会走正常流程。</p>
+<p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render09.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p><strong>场景四</strong>：还有一种情况，什么时候 B 会跳出调和流程呢？</p>
+<p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render10.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+<p>到此为止完成了整个更新流程。</p>
+<h1 id="5-beginWork-流程图"><a href="#5-beginWork-流程图" class="headerlink" title="5. beginWork 流程图"></a>5. beginWork 流程图</h1><p><img src="/img/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/render11.png" srcset="/img/loading.gif" lazyload alt="image.png"></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/" class="category-chain-item">web前端</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/" class="category-chain-item">React</a>
+  
+  
+    <span>></span>
+    
+  <a href="/categories/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/" class="category-chain-item">原理</a>
+  
+  
+
+  
+
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/React/">#React</a>
+      
+        <a href="/tags/beginWork%E5%92%8Crender%E5%85%A8%E6%B5%81%E7%A8%8B/">#beginWork和render全流程</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>beginWork和render全流程</div>
+      <div>https://hgj1999.github.io/2023/08/26/web前端/React/原理/05.beginWork和render全流程/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Glimmering Stars</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年8月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/04.%E8%B0%83%E5%BA%A6%E4%BB%BB%E5%8A%A1/" title="调度任务">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">调度任务</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/03.%E8%B0%83%E5%92%8C%E4%B8%8Efiber/" title="调和与fiber">
+                        <span class="hidden-mobile">调和与fiber</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+      Ever Forward
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.0/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.18.2/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
