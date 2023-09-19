@@ -19,7 +19,7 @@
     <meta name="description" content="双线程架构渲染层和逻辑层由两个线程管理逻辑层：JSCore 运行 js 代码渲染层：webview 进行渲染，多个页面，多个webview系统层：逻辑层和渲染层由 Native 层控制：通信、数据传递、网络请求转发 demo123456789&#x2F;&#x2F; index.wxml&lt;view&gt;&amp;#123;&amp;#123; msg &amp;#125;&amp;#125;&lt;&#x2F;view&gt;&#x2F;&#x2F; index.jsP">
 <meta property="og:type" content="article">
 <meta property="og:title" content="原理">
-<meta property="og:url" content="https://hgj1999.github.io/2023/09/18/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/01.%E5%8E%9F%E7%90%86/index.html">
+<meta property="og:url" content="https://hgj1999.github.io/2023/09/19/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/01.%E5%8E%9F%E7%90%86/index.html">
 <meta property="og:site_name" content="点点星光的技术博客">
 <meta property="og:description" content="双线程架构渲染层和逻辑层由两个线程管理逻辑层：JSCore 运行 js 代码渲染层：webview 进行渲染，多个页面，多个webview系统层：逻辑层和渲染层由 Native 层控制：通信、数据传递、网络请求转发 demo123456789&#x2F;&#x2F; index.wxml&lt;view&gt;&amp;#123;&amp;#123; msg &amp;#125;&amp;#125;&lt;&#x2F;view&gt;&#x2F;&#x2F; index.jsP">
 <meta property="og:locale" content="zh_CN">
@@ -33,8 +33,8 @@
 <meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%8E%9F%E7%90%86/img08.png">
 <meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%8E%9F%E7%90%86/img09.png">
 <meta property="og:image" content="https://hgj1999.github.io/img/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/%E5%8E%9F%E7%90%86/img10.png">
-<meta property="article:published_time" content="2023-09-18T05:56:15.000Z">
-<meta property="article:modified_time" content="2023-09-19T01:20:26.941Z">
+<meta property="article:published_time" content="2023-09-19T05:56:15.000Z">
+<meta property="article:modified_time" content="2023-09-19T01:33:11.478Z">
 <meta property="article:author" content="Glimmering Stars">
 <meta property="article:tag" content="微信小程序">
 <meta property="article:tag" content="原理">
@@ -220,8 +220,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2023-09-18 13:56" pubdate>
-          2023年9月18日 下午
+        <time datetime="2023-09-19 13:56" pubdate>
+          2023年9月19日 下午
         </time>
       </span>
     
@@ -243,7 +243,7 @@
         
         
         
-          53 分钟
+          54 分钟
         
       </span>
     
@@ -1250,7 +1250,7 @@
     
       
       
-        <a href="/2023/09/18/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/01.%E5%8E%9F%E7%90%86/" title="原理"
+        <a href="/2023/09/19/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/01.%E5%8E%9F%E7%90%86/" title="原理"
            class="list-group-item list-group-item-action
            active">
           <span class="category-post">原理</span>
@@ -1543,7 +1543,7 @@
 <ul>
 <li><strong>templates</strong> <strong>规范</strong></li>
 </ul>
-<p>提供了<template>标签，可以在它里面使用HTML定义DOM结构。</p>
+<p>提供了<code>&lt;template&gt;</code>标签，可以在它里面使用HTML定义DOM结构。</p>
 <ul>
 <li><strong>Shadow DOM规范</strong></li>
 </ul>
@@ -1642,7 +1642,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>原理</div>
-      <div>https://hgj1999.github.io/2023/09/18/web前端/微信小程序/01.原理/</div>
+      <div>https://hgj1999.github.io/2023/09/19/web前端/微信小程序/01.原理/</div>
     </div>
     <div class="license-meta">
       
@@ -1654,7 +1654,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2023年9月18日</div>
+          <div>2023年9月19日</div>
         </div>
       
       
@@ -1686,18 +1686,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/09/18/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/02.%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" title="性能优化">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">性能优化</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/08/26/web%E5%89%8D%E7%AB%AF/React/%E5%8E%9F%E7%90%86/07.context/" title="context">
-                        <span class="hidden-mobile">context</span>
+                      <a href="/2023/09/18/web%E5%89%8D%E7%AB%AF/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F/02.%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" title="性能优化">
+                        <span class="hidden-mobile">性能优化</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
